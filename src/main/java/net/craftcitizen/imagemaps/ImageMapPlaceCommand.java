@@ -16,6 +16,9 @@ import java.util.List;
 
 public class ImageMapPlaceCommand extends ImageMapSubCommand {
 
+    // What I want:
+    // - /imagemap place rat 1x1 false
+
     public ImageMapPlaceCommand(ImageMaps plugin) {
         super("imagemaps.place", plugin, false);
     }
@@ -33,14 +36,14 @@ public class ImageMapPlaceCommand extends ImageMapSubCommand {
         }
 
         String filename = args[1];
-        boolean isInvisible = false;
+        boolean isInvisible = true;
         boolean isFixed = false;
         boolean isGlowing = false;
         Tuple<Integer, Integer> scale;
 
         if (getPlugin().isInvisibilitySupported()) {
-            isInvisible = args.length >= 3 && Boolean.parseBoolean(args[2]);
-            isFixed = args.length >= 4 && Boolean.parseBoolean(args[3]);
+            // isInvisible = args.length >= 3 && Boolean.parseBoolean(args[2]);
+            // isFixed = args.length >= 4 && Boolean.parseBoolean(args[3]);
             if (getPlugin().isGlowingSupported()) {
                 isGlowing = args.length >= 5 && Boolean.parseBoolean(args[4]);
                 scale = args.length >= 6 ? parseScale(args[5]) : new Tuple<>(-1, -1);

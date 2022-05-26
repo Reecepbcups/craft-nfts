@@ -6,7 +6,10 @@ TODO:
 
 
 Comamands:
+- /imagemap download test link
 - /imagemap place test true true false 1x1
+
+- /imagemap info test
 
 
 ## Usage
