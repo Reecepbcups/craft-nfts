@@ -34,7 +34,7 @@ db = client["NFTs"]
 OWNERS_COLLECTION = db["holdings"]
 
 
-print("craft12wdcv2lm6uhyh5f6ytjvh2nlkukrmkdk4qt20v\ncraft178n8r8wmkjy2e3ark3c2dhp4jma0r6zwce9z7k") 
+print("WEBAPP\ncraft12wdcv2lm6uhyh5f6ytjvh2nlkukrmkdk4qt20v (omniflix as well)\ncraft178n8r8wmkjy2e3ark3c2dhp4jma0r6zwce9z7k (stargaze only)") 
 WALLET = input("\n(KEPLR) WHAT IS YOUR CRAFT ADDRESS? ") or "craft12wdcv2lm6uhyh5f6ytjvh2nlkukrmkdk4qt20v"
 
 
@@ -66,30 +66,31 @@ def main():
 
     # We save all of these NFTs we just queried to the database with their address.
     # If there is no document it creates is, if there is it updates jusst the nft section.
-    updateUsersHoldings(WALLET, myNFTs, debug=False) 
+    updateUsersHoldings(WALLET, myNFTs, debug=True) 
     
     # ! THIS CONCLUDES THE WEBAPP PORTION
     # ! THIS IS THE POC NOW FOR HOW THE MINECRAFT SERVER WILL HANDLE IT
 
     # On MC, we get a users documents based on their address. This will be linked in game via a DB => wallet
     # {address: "craftxxxx", nfts: {}, realestate: {}}
+
     myDatabaseNFTS = getUsersCollection(WALLET) 
-    print(f"\nAll {WALLET}'s NFT Names:\n\n", dict(myDatabaseNFTS['nfts']).keys())
+    print(f"\nIN GAME MINECRAFT => All {WALLET}'s NFT Names:\n\n", dict(myDatabaseNFTS['nfts']).keys())
 
-    
-    queryNFTName = input("(GUI) WHICH NFT DO YOU WANT TO PLACE? ") or "Starchoadz #6215"
-    
-    # Query database for address, if there get the nft section, and get queryNFTName
-    # if there is no value for queryNFTName, it returns "" which means they dont own that NFT name.
-    link = getLink(WALLET, queryNFTName) 
-    if len(link) > 0:
-        print(f'\nFound link for {queryNFTName}: ', link)
-        img = downloadImageToMemoryAndShow(link, show=True)
-        # saveImageToDrive(img, f"{searchNFT.replace(' ', '_')}.jpeg")
-    else:
-        print(f'It does not seem {WALLET} owns the {queryNFTName}')
+    while True: # just so we can confirm the names work, ctrl + c to exit
+        queryNFTName = input("(GUI) WHICH NFT DO YOU WANT TO PLACE? ") or "Starchoadz #6215"
+        
+        # Query database for address, if there get the nft section, and get queryNFTName
+        # if there is no value for queryNFTName, it returns "" which means they dont own that NFT name.
+        link = getLink(WALLET, queryNFTName) 
+        if len(link) > 0:
+            print(f'\nFound link for {queryNFTName}: ', link)
+            img = downloadImageToMemoryAndShow(link, show=True)
+            # saveImageToDrive(img, f"{searchNFT.replace(' ', '_')}.jpeg")
+        else:
+            print(f'It does not seem {WALLET} owns the {queryNFTName}')
 
-    # DEBUGGING Same as above
+    # DEBUGGING Same as above, just more manual
     # ipfsLink = getLink(address="stars178n8r8wmkjy2e3ark3c2dhp4jma0r6zwdnpgsm", name="IBC Ninjas #780")
     # print('linkFoundForUser', ipfsLink)
 
