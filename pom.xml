@@ -1,6 +1,4 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>net.craftcitizen</groupId>
   <artifactId>imagemaps</artifactId>
@@ -33,6 +31,15 @@
   </repositories>
 
   <dependencies>
+
+    <!-- https://mvnrepository.com/artifact/org.mongodb/mongo-java-driver -->
+    <dependency>
+      <artifactId>mongo-java-driver</artifactId>
+      <version>3.12.11</version>
+      <!-- <scope>provided</scope> To fix java.lang.LinkageError: loader constraint violation: loader 'craft-companies.jar' error? -->
+      <groupId>org.mongodb</groupId>
+    </dependency>
+
     <dependency>
       <groupId>org.spigotmc</groupId>
       <artifactId>spigot-api</artifactId>
