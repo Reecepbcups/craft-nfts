@@ -1,8 +1,10 @@
-package net.craftcitizen.imagemaps;
+package net.craftcitizen.imagemaps.subcmds;
 
 import de.craftlancer.core.LambdaRunnable;
 import de.craftlancer.core.util.MessageLevel;
 import de.craftlancer.core.util.MessageUtil;
+import net.craftcitizen.imagemaps.ImageMaps;
+
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 

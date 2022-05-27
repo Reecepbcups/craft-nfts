@@ -1,4 +1,4 @@
-package net.craftcitizen.imagemaps;
+package net.craftcitizen.imagemaps.event;
 
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -6,6 +6,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
+
+import net.craftcitizen.imagemaps.images.PlacementData;
 
 /**
  * Called when an image is attempted to be placed.

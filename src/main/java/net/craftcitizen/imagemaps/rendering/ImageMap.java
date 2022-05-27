@@ -1,4 +1,4 @@
-package net.craftcitizen.imagemaps;
+package net.craftcitizen.imagemaps.rendering;
 
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.configuration.serialization.SerializableAs;

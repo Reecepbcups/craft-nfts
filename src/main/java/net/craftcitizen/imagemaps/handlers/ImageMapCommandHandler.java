@@ -1,6 +1,14 @@
-package net.craftcitizen.imagemaps;
+package net.craftcitizen.imagemaps.handlers;
 
 import de.craftlancer.core.command.CommandHandler;
+import net.craftcitizen.imagemaps.ImageMaps;
+import net.craftcitizen.imagemaps.subcmds.ImageMapDeleteCommand;
+import net.craftcitizen.imagemaps.subcmds.ImageMapDownloadCommand;
+import net.craftcitizen.imagemaps.subcmds.ImageMapHelpCommand;
+import net.craftcitizen.imagemaps.subcmds.ImageMapInfoCommand;
+import net.craftcitizen.imagemaps.subcmds.ImageMapListCommand;
+import net.craftcitizen.imagemaps.subcmds.ImageMapPlaceCommand;
+import net.craftcitizen.imagemaps.subcmds.ImageMapReloadCommand;
 
 public class ImageMapCommandHandler extends CommandHandler {
     public ImageMapCommandHandler(ImageMaps plugin) {

@@ -1,6 +1,7 @@
-package net.craftcitizen.imagemaps;
+package net.craftcitizen.imagemaps.subcmds;
 
 import de.craftlancer.core.command.SubCommand;
+import net.craftcitizen.imagemaps.ImageMaps;
 
 public abstract class ImageMapSubCommand extends SubCommand {
 

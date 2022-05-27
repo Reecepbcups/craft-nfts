@@ -1,4 +1,4 @@
-package net.craftcitizen.imagemaps;
+package net.craftcitizen.imagemaps.enums;
 
 public enum PlacementResult {
     INVALID_FACING,

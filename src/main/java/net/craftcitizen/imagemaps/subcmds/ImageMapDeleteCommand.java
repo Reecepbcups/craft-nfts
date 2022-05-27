@@ -1,8 +1,10 @@
-package net.craftcitizen.imagemaps;
+package net.craftcitizen.imagemaps.subcmds;
 
 import de.craftlancer.core.Utils;
 import de.craftlancer.core.util.MessageLevel;
 import de.craftlancer.core.util.MessageUtil;
+import net.craftcitizen.imagemaps.ImageMaps;
+
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 
@@ -10,10 +12,10 @@ import java.io.File;
 import java.util.Collections;
 import java.util.List;
 
-public class ImageMapReloadCommand extends ImageMapSubCommand {
+public class ImageMapDeleteCommand extends ImageMapSubCommand {
 
-    public ImageMapReloadCommand(ImageMaps plugin) {
-        super("imagemap.reload", plugin, true);
+    public ImageMapDeleteCommand(ImageMaps plugin) {
+        super("imagemaps.delete", plugin, true);
     }
 
     @Override
@@ -35,19 +37,23 @@ public class ImageMapReloadCommand extends ImageMapSubCommand {
             return null;
         }
 
-        if (getPlugin().reloadImage(filename))
-            MessageUtil.sendMessage(getPlugin(), sender, MessageLevel.NORMAL, "Image reloaded.");
-        else
-            MessageUtil.sendMessage(getPlugin(), sender, MessageLevel.NORMAL, "Image couldn't be reloaded (does it exist?).");
+        if (!getPlugin().hasImage(filename)) {
+            MessageUtil.sendMessage(getPlugin(), sender, MessageLevel.WARNING, "No image with this name exists.");
+            return null;
+        }
 
+        if (getPlugin().deleteImage(filename)) {
+            MessageUtil.sendMessage(getPlugin(), sender, MessageLevel.NORMAL, "File deleted.");
+        } else {
+            MessageUtil.sendMessage(getPlugin(), sender, MessageLevel.WARNING, "Failed to delete file.");
+        }
         return null;
     }
 
     @Override
     public void help(CommandSender sender) {
-        MessageUtil.sendMessage(getPlugin(), sender, MessageLevel.NORMAL, "Reloads an image from disk, to be used when the file changed.");
-        MessageUtil.sendMessage(getPlugin(), sender, MessageLevel.NORMAL, "Avoid resolution changes, since they won't be scaled.");
-        MessageUtil.sendMessage(getPlugin(), sender, MessageLevel.INFO, "Usage: /imagemap reload <filename>");
+        MessageUtil.sendMessage(getPlugin(), sender, MessageLevel.NORMAL, "Deletes an image.");
+        MessageUtil.sendMessage(getPlugin(), sender, MessageLevel.INFO, "Usage: /imagemap delete <filename>");
     }
 
     @Override
@@ -57,5 +63,4 @@ public class ImageMapReloadCommand extends ImageMapSubCommand {
 
         return Collections.emptyList();
     }
-
 }

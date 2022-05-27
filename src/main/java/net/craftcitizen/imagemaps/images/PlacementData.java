@@ -1,4 +1,4 @@
-package net.craftcitizen.imagemaps;
+package net.craftcitizen.imagemaps.images;
 
 import de.craftlancer.core.util.Tuple;
 
