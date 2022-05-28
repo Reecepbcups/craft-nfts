@@ -217,7 +217,7 @@ public class ImageMaps extends JavaPlugin implements Listener {
             });
     }
 
-    private Configuration convertLegacyMaps(Configuration config) {
+    private Configuration convertLegacyMaps(Configuration config) { // TODO: Remove?
         getLogger().info("Converting maps from Version <1.0");
 
         try {
@@ -331,6 +331,7 @@ public class ImageMaps extends JavaPlugin implements Listener {
     }
 
     private PlacementResult placeImage(Player player, Block block, BlockFace face, PlacementData data) {
+        // add to ImageThings.java ?
         if (!isAxisAligned(face)) {
             getLogger().severe("Someone tried to create an image with an invalid block facing");
             return PlacementResult.INVALID_FACING;
@@ -385,6 +386,7 @@ public class ImageMaps extends JavaPlugin implements Listener {
     }
 
     public boolean deleteImage(String filename) {
+        // ImageThings.java ?        
         File file = new File(getDataFolder(), IMAGES_DIR + File.separatorChar + filename);
 
         boolean fileDeleted = false;
@@ -418,6 +420,7 @@ public class ImageMaps extends JavaPlugin implements Listener {
 
     @SuppressWarnings("deprecation")
     public boolean reloadImage(String filename) {
+        // NFTCache?
         if (!imageCache.containsKey(filename.toLowerCase()))
             return false;
 

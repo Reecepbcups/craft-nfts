@@ -5,6 +5,9 @@ TODO:
 - On server start, or reload of images, grab values from MongoDB instead. (Switch to gridfs in future)
 - when you download an image, its bc you want to use it. So do this in the same command / action
 
+- Remove toLowerCase for NFT names. We want absolute
+- add wallet checks when placing / trying to download
+
 ```
 /image place <NFTName> 1x1
 - checks if you own that NFT, or auto populate with your keySet

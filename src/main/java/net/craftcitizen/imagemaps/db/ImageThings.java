@@ -96,7 +96,6 @@ public class ImageThings {
 
                 if(!OurNFTs.containsKey(name)) {
                     ArrayList<String> newList = new ArrayList<String>();
-                    newList.add(id);
                     OurNFTs.put(name, newList);
                 } 
 

@@ -77,16 +77,16 @@ public class Main {
 
 
         // would be done via GUI in future
-        // Scanner scanner = new Scanner(System.in);
-        // System.out.println("Enter your NFT name: ");
-        // String nftName = scanner.nextLine();
-        // scanner.close();
-        // String link = getIPFSLink(doc, nftName);
-        // System.out.println(link);
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Enter your NFT name: ");
+        String nftName = scanner.nextLine();
+        scanner.close();
+        String link = getIPFSLink(doc, nftName);
+        System.out.println(link);
 
         // we do this when the user wants to place it, so it saves to DB
-        java.awt.image.BufferedImage bImg = downloadNFT("https://ipfs.stargaze.zone/ipfs/bafybeiedtjgjv5azuwuzrv34qfbndyfktnqibrwc2vkwyzqxjw3abu3pra/images/775.png");
-        saveImageIOToMongoDB(bImg, "ninja");
+        java.awt.image.BufferedImage bImg = downloadNFT(link);
+        saveImageIOToMongoDB(bImg, nftName);
 
         // load it from the DB
         // byte[] byteArray = loadImageFromMongDB("1170");
@@ -149,7 +149,6 @@ public class Main {
 
                 if(!OurNFTs.containsKey(name)) {
                     ArrayList<String> newList = new ArrayList<String>();
-                    newList.add(id);
                     OurNFTs.put(name, newList);
                 } 
 
