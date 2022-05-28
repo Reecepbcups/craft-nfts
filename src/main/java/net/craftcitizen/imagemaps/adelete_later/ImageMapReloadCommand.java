@@ -40,10 +40,11 @@ public class ImageMapReloadCommand extends ImageMapSubCommand {
             return null;
         }
 
-        if (getPlugin().reloadImage(nftName))
-            MessageUtil.sendMessage(getPlugin(), sender, MessageLevel.NORMAL, "NFT Image reloaded.");
-        else
-            MessageUtil.sendMessage(getPlugin(), sender, MessageLevel.NORMAL, "NFT Iamge couldn't be reloaded (does it exist?).");
+        System.out.println("ReloadImage in ImagemapReloadCommand is commented out!");
+        // if (getPlugin().reloadImage(nftName))
+        //     MessageUtil.sendMessage(getPlugin(), sender, MessageLevel.NORMAL, "NFT Image reloaded.");
+        // else
+        //     MessageUtil.sendMessage(getPlugin(), sender, MessageLevel.NORMAL, "NFT Iamge couldn't be reloaded (does it exist?).");
 
         return null;
     }

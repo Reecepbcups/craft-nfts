@@ -38,10 +38,12 @@ public class ImageMapDeleteCommand extends ImageMapSubCommand {
             return null;
         }
 
-        if (!getPlugin().hasImage(filename)) {
-            MessageUtil.sendMessage(getPlugin(), sender, MessageLevel.WARNING, "No image with this name exists.");
-            return null;
-        }
+
+        System.out.println("hasImage in ImageMapDeleteCommand is commented out");
+        // if (!getPlugin().hasImage(filename)) {
+        //     MessageUtil.sendMessage(getPlugin(), sender, MessageLevel.WARNING, "No image with this name exists.");
+        //     return null;
+        // }
 
         if (getPlugin().deleteImage(filename)) {
             MessageUtil.sendMessage(getPlugin(), sender, MessageLevel.NORMAL, "File deleted.");

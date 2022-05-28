@@ -94,7 +94,8 @@ public class ImageMapDownloadCommand extends ImageMapSubCommand {
 
                 if (fileExisted) {
                     MessageUtil.sendMessage(getPlugin(), sender, MessageLevel.WARNING, "File already exists, overwriting!");
-                    getPlugin().reloadImage(filename);
+                    System.out.println("ReloadImage in ImagemapsDownloadCommand is commented out!");
+                    // getPlugin().reloadImage(filename);
                 }
             } catch (IllegalArgumentException ex) {
                 MessageUtil.sendMessage(getPlugin(), sender, MessageLevel.WARNING, "Received no data");

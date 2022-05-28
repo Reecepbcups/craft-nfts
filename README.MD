@@ -7,6 +7,8 @@ TODO:
 
 - add tab complete support
 
+- when saving, replace spaces with _? This way if a user does _'s it works. Then in GUIS just replace _ -> " "
+
 - Remove toLowerCase for NFT names. We want absolute
 - add wallet checks when placing / trying to download
 

@@ -8,6 +8,7 @@ import de.craftlancer.core.util.MessageLevel;
 import de.craftlancer.core.util.MessageUtil;
 import de.craftlancer.core.util.Tuple;
 import net.craftcitizen.imagemaps.db.ImageThings;
+import net.craftcitizen.imagemaps.db.NFTCache;
 import net.craftcitizen.imagemaps.enums.PlacementResult;
 import net.craftcitizen.imagemaps.event.ImagePlaceEvent;
 import net.craftcitizen.imagemaps.handlers.ImageMapCommandHandler;
@@ -65,8 +66,7 @@ public class ImageMaps extends JavaPlugin implements Listener {
     public static final int MAP_HEIGHT = 128;
     private static final String IMAGES_DIR = "images";
 
-    private Map<String, BufferedImage> imageCache = new HashMap<>();
-    private Map<ImageMap, Integer> maps = new HashMap<>();
+    private NFTCache cache = null;
 
     private Material toggleItem;
 
@@ -80,8 +80,10 @@ public class ImageMaps extends JavaPlugin implements Listener {
             new ComponentBuilder("[").color(ChatColor.GRAY).append("CraftNFTs").color(ChatColor.GREEN).append("]").color(ChatColor.GRAY).create());
         MessageUtil.registerPlugin(this, prefix, ChatColor.GRAY, ChatColor.YELLOW, ChatColor.RED, ChatColor.DARK_RED, ChatColor.DARK_AQUA);
 
-        if (!new File(getDataFolder(), IMAGES_DIR).exists())
-            new File(getDataFolder(), IMAGES_DIR).mkdirs();
+        // if (!new File(getDataFolder(), IMAGES_DIR).exists())
+        //     new File(getDataFolder(), IMAGES_DIR).mkdirs();
+
+        cache = new NFTCache();
 
         saveDefaultConfig();
 
@@ -162,7 +164,7 @@ public class ImageMaps extends JavaPlugin implements Listener {
         // TODO: Save to MOngoDB
         FileConfiguration config = new YamlConfiguration();
         config.set(CONFIG_VERSION_KEY, CONFIG_VERSION);
-        config.set("maps", maps.entrySet().stream().collect(Collectors.toMap(Entry::getValue, Entry::getKey)));
+        config.set("maps", NFTCache.getMaps().entrySet().stream().collect(Collectors.toMap(Entry::getValue, Entry::getKey)));
 
         BukkitRunnable saveTask = new LambdaRunnable(() -> {
             try {
@@ -188,9 +190,6 @@ public class ImageMaps extends JavaPlugin implements Listener {
         Configuration config = YamlConfiguration.loadConfiguration(configFile);
         int version = config.getInt(CONFIG_VERSION_KEY, -1);
 
-        if (version == -1)
-            config = convertLegacyMaps(config);
-
         ConfigurationSection section = config.getConfigurationSection("maps");
         if (section != null)
             section.getValues(false).forEach((a, b) -> {
@@ -198,7 +197,7 @@ public class ImageMaps extends JavaPlugin implements Listener {
                 ImageMap imageMap = (ImageMap) b;
                 @SuppressWarnings("deprecation")
                 MapView map = Bukkit.getMap(id);
-                BufferedImage image = getImage(imageMap.getFilename());
+                BufferedImage image = cache.getImage(imageMap.getFilename());
 
                 if (image == null) {
                     getLogger().warning(() -> "Image file " + imageMap.getFilename() + " not found. Removing map!");
@@ -213,76 +212,10 @@ public class ImageMaps extends JavaPlugin implements Listener {
                     map.setTrackingPosition(false);
                 map.getRenderers().forEach(map::removeRenderer);
                 map.addRenderer(new ImageMapRenderer(this, image, imageMap.getX(), imageMap.getY(), imageMap.getScale()));
-                maps.put(imageMap, id);
+                NFTCache.addMap(imageMap, id);
             });
     }
-
-    private Configuration convertLegacyMaps(Configuration config) { // TODO: Remove?
-        getLogger().info("Converting maps from Version <1.0");
-
-        try {
-            Files.copy(new File(getDataFolder(), MAPS_YML), new File(getDataFolder(), MAPS_YML + ".backup"));
-        } catch (IOException e) {
-            getLogger().severe("Failed to backup maps.yml!");
-            e.printStackTrace();
-        }
-
-        Map<Integer, ImageMap> map = new HashMap<>();
-
-        for (String key : config.getKeys(false)) {
-            int id = Integer.parseInt(key);
-            String image = config.getString(key + ".image");
-            int x = config.getInt(key + ".x") / MAP_WIDTH;
-            int y = config.getInt(key + ".y") / MAP_HEIGHT;
-            double scale = config.getDouble(key + ".scale", 1.0);
-            map.put(id, new ImageMap(image, x, y, scale));
-        }
-
-        config = new YamlConfiguration();
-        config.set(CONFIG_VERSION_KEY, CONFIG_VERSION);
-        config.createSection("maps", map);
-        return config;
-    }
-
-    public boolean hasImage(String filename) {
-        if (imageCache.containsKey(filename.toLowerCase()))
-            return true;
-
-        File file = new File(getDataFolder(), IMAGES_DIR + File.separatorChar + filename);
-
-        return file.exists() && getImage(filename) != null;
-    }
-
-    public BufferedImage getImage(String NFTName) {
-        // Gets image or adds it to cache
-
-        // TODO WIP
-        // if (filename.contains("/") || filename.contains("\\") || filename.contains(":")) {
-        //     getLogger().warning("Someone tried to get image with illegal characters in file name.");
-        //     return null;
-        // }
-
-        if (imageCache.containsKey(NFTName.toLowerCase()))
-            return imageCache.get(NFTName.toLowerCase());
-
-        // File file = new File(getDataFolder(), IMAGES_DIR + File.separatorChar + filename);
-        // BufferedImage image = null;
-        // get an image
-        ImageThings iT = new ImageThings("craft178n8r8wmkjy2e3ark3c2dhp4jma0r6zwce9z7k");
-        // iT.get
-        BufferedImage image = iT.loadImageFromMongDB(NFTName);
-        // BufferedImage image = iT.toBufferedImage(byteArray);
-        System.out.println("Loaded image in getImage "+NFTName+" (ImageMaps.java)");
-
-
-        // if (!file.exists())
-        //     return null;
-
-        // image = ImageIO.read(file);
-        imageCache.put(NFTName.toLowerCase(), image);
-
-        return image;
-    }
+    
 
     @EventHandler
     public void onInteract(PlayerInteractEvent event) {
@@ -341,7 +274,7 @@ public class ImageMaps extends JavaPlugin implements Listener {
             return PlacementResult.INVALID_FACING;
 
         Block b = block.getRelative(face);
-        BufferedImage image = getImage(data.getNFTName());
+        BufferedImage image = cache.getImage(data.getNFTName());
         Tuple<Integer, Integer> size = getImageSize(data.getImage(), data.getSize());
         BlockFace widthDirection = calculateWidthDirection(player, face);
         BlockFace heightDirection = calculateHeightDirection(player, face);
@@ -385,22 +318,22 @@ public class ImageMaps extends JavaPlugin implements Listener {
         return PlacementResult.SUCCESS;
     }
 
-    public boolean deleteImage(String filename) {
+    public boolean deleteImage(String nftName) {
         // ImageThings.java ?        
-        File file = new File(getDataFolder(), IMAGES_DIR + File.separatorChar + filename);
+        // File file = new File(getDataFolder(), IMAGES_DIR + File.separatorChar + nftName);
 
-        boolean fileDeleted = false;
-        if (file.exists()) {
-            fileDeleted = file.delete();
-        }
+        // boolean fileDeleted = false;
+        // if (file.exists()) {
+        //     fileDeleted = file.delete();
+        // }
 
-        imageCache.remove(filename.toLowerCase());
+        NFTCache.deleteImageFromCache(nftName.toLowerCase());
 
-        Iterator<Entry<ImageMap, Integer>> it = maps.entrySet().iterator();
+        Iterator<Entry<ImageMap, Integer>> it = NFTCache.getMaps().entrySet().iterator();
         while (it.hasNext()) {
             Entry<ImageMap, Integer> entry = it.next();
             ImageMap imageMap = entry.getKey();
-            if (!imageMap.getFilename().equalsIgnoreCase(filename)) {
+            if (!imageMap.getFilename().equalsIgnoreCase(nftName)) {
                 continue;
             }
 
@@ -415,26 +348,8 @@ public class ImageMaps extends JavaPlugin implements Listener {
         }
 
         saveMaps();
-        return fileDeleted;
-    }
-
-    @SuppressWarnings("deprecation")
-    public boolean reloadImage(String nftName) {
-        // NFTCache?
-        if (!imageCache.containsKey(nftName.toLowerCase()))
-            return false;
-
-        imageCache.remove(nftName.toLowerCase());
-        BufferedImage image = getImage(nftName);
-
-        if (image == null) {
-            getLogger().warning(() -> "Failed to reload image: " + nftName);
-            return false;
-        }
-
-        maps.entrySet().stream().filter(a -> a.getKey().getFilename().equalsIgnoreCase(nftName)).map(a -> Bukkit.getMap(a.getValue()))
-                .flatMap(a -> a.getRenderers().stream()).filter(ImageMapRenderer.class::isInstance).forEach(a -> ((ImageMapRenderer) a).recalculateInput(image));
-        return true;
+        System.out.println("This function deleteImage always returns true!");
+        return true; 
     }
 
     @SuppressWarnings("deprecation")
@@ -442,9 +357,9 @@ public class ImageMaps extends JavaPlugin implements Listener {
         ItemStack item = new ItemStack(Material.FILLED_MAP);
 
         ImageMap imageMap = new ImageMap(data.getNFTName(), x, y, getScale(image, data.getSize()));
-        if (maps.containsKey(imageMap)) {
+        if (NFTCache.getMaps().containsKey(imageMap)) {
             MapMeta meta = (MapMeta) item.getItemMeta();
-            meta.setMapId(maps.get(imageMap));
+            meta.setMapId(NFTCache.getMaps().get(imageMap));
             item.setItemMeta(meta);
             return item;
         }
@@ -458,7 +373,7 @@ public class ImageMaps extends JavaPlugin implements Listener {
         MapMeta meta = ((MapMeta) item.getItemMeta());
         meta.setMapView(map);
         item.setItemMeta(meta);
-        maps.put(imageMap, map.getId());
+        NFTCache.addMap(imageMap, map.getId());
 
         return item;
     }
@@ -477,7 +392,7 @@ public class ImageMaps extends JavaPlugin implements Listener {
     }
 
     public double getScale(String filename, Tuple<Integer, Integer> size) {
-        return getScale(getImage(filename), size);
+        return getScale(cache.getImage(filename), size);
     }
 
     public double getScale(BufferedImage image, Tuple<Integer, Integer> size) {
