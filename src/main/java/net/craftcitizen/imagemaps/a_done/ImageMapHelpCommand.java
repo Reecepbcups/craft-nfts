@@ -1,4 +1,4 @@
-package net.craftcitizen.imagemaps.subcmds;
+package net.craftcitizen.imagemaps.a_done;
 
 import de.craftlancer.core.command.HelpCommand;
 import de.craftlancer.core.command.SubCommand;
@@ -14,6 +14,9 @@ import org.bukkit.plugin.Plugin;
 import java.util.Map;
 
 public class ImageMapHelpCommand extends HelpCommand {
+
+    // TODO: Just change the names from filename -> NFT
+    // update syntax
 
     public ImageMapHelpCommand(Plugin plugin, Map<String, SubCommand> map) {
         super("imagemaps.help", plugin, map);

@@ -1,9 +1,10 @@
-package net.craftcitizen.imagemaps.subcmds;
+package net.craftcitizen.imagemaps.adelete_later;
 
 import de.craftlancer.core.Utils;
 import de.craftlancer.core.util.MessageLevel;
 import de.craftlancer.core.util.MessageUtil;
 import net.craftcitizen.imagemaps.ImageMaps;
+import net.craftcitizen.imagemaps.subcmds.ImageMapSubCommand;
 
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -13,6 +14,8 @@ import java.util.Collections;
 import java.util.List;
 
 public class ImageMapReloadCommand extends ImageMapSubCommand {
+
+    // TODO I dont think we even need this class since IPFS images never change.
 
     public ImageMapReloadCommand(ImageMaps plugin) {
         super("imagemap.reload", plugin, true);
@@ -30,26 +33,26 @@ public class ImageMapReloadCommand extends ImageMapSubCommand {
             return null;
         }
 
-        String filename = args[1];
+        String nftName = args[1];
 
-        if (filename.contains("/") || filename.contains("\\") || filename.contains(":")) {
-            MessageUtil.sendMessage(getPlugin(), sender, MessageLevel.WARNING, "Filename contains illegal character.");
+        if (nftName.contains("/") || nftName.contains("\\") || nftName.contains(":")) {
+            MessageUtil.sendMessage(getPlugin(), sender, MessageLevel.WARNING, "NFTName contains illegal character.");
             return null;
         }
 
-        if (getPlugin().reloadImage(filename))
-            MessageUtil.sendMessage(getPlugin(), sender, MessageLevel.NORMAL, "Image reloaded.");
+        if (getPlugin().reloadImage(nftName))
+            MessageUtil.sendMessage(getPlugin(), sender, MessageLevel.NORMAL, "NFT Image reloaded.");
         else
-            MessageUtil.sendMessage(getPlugin(), sender, MessageLevel.NORMAL, "Image couldn't be reloaded (does it exist?).");
+            MessageUtil.sendMessage(getPlugin(), sender, MessageLevel.NORMAL, "NFT Iamge couldn't be reloaded (does it exist?).");
 
         return null;
     }
 
     @Override
     public void help(CommandSender sender) {
-        MessageUtil.sendMessage(getPlugin(), sender, MessageLevel.NORMAL, "Reloads an image from disk, to be used when the file changed.");
+        MessageUtil.sendMessage(getPlugin(), sender, MessageLevel.NORMAL, "Reloads an image from database, to be used when the file changed.");
         MessageUtil.sendMessage(getPlugin(), sender, MessageLevel.NORMAL, "Avoid resolution changes, since they won't be scaled.");
-        MessageUtil.sendMessage(getPlugin(), sender, MessageLevel.INFO, "Usage: /imagemap reload <filename>");
+        MessageUtil.sendMessage(getPlugin(), sender, MessageLevel.INFO, "Usage: /imagemap reload <nftName>");
     }
 
     @Override

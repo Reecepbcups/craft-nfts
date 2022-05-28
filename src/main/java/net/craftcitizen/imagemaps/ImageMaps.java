@@ -419,20 +419,20 @@ public class ImageMaps extends JavaPlugin implements Listener {
     }
 
     @SuppressWarnings("deprecation")
-    public boolean reloadImage(String filename) {
+    public boolean reloadImage(String nftName) {
         // NFTCache?
-        if (!imageCache.containsKey(filename.toLowerCase()))
+        if (!imageCache.containsKey(nftName.toLowerCase()))
             return false;
 
-        imageCache.remove(filename.toLowerCase());
-        BufferedImage image = getImage(filename);
+        imageCache.remove(nftName.toLowerCase());
+        BufferedImage image = getImage(nftName);
 
         if (image == null) {
-            getLogger().warning(() -> "Failed to reload image: " + filename);
+            getLogger().warning(() -> "Failed to reload image: " + nftName);
             return false;
         }
 
-        maps.entrySet().stream().filter(a -> a.getKey().getFilename().equalsIgnoreCase(filename)).map(a -> Bukkit.getMap(a.getValue()))
+        maps.entrySet().stream().filter(a -> a.getKey().getFilename().equalsIgnoreCase(nftName)).map(a -> Bukkit.getMap(a.getValue()))
                 .flatMap(a -> a.getRenderers().stream()).filter(ImageMapRenderer.class::isInstance).forEach(a -> ((ImageMapRenderer) a).recalculateInput(image));
         return true;
     }
