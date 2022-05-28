@@ -1,9 +1,10 @@
-package net.craftcitizen.imagemaps.subcmds;
+package net.craftcitizen.imagemaps.adelete_later;
 
 import de.craftlancer.core.Utils;
 import de.craftlancer.core.util.MessageLevel;
 import de.craftlancer.core.util.MessageUtil;
 import net.craftcitizen.imagemaps.ImageMaps;
+import net.craftcitizen.imagemaps.subcmds.ImageMapSubCommand;
 
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;

@@ -9,6 +9,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
@@ -122,6 +123,16 @@ public class ImageThings {
         for (Document document : documents) {
             System.out.println(document);
         }
+    }
+
+
+    public static String[] getAllPlacedNFTs() {
+        List<Document> documents = (List<Document>) PLACED_NFTS.find().into(new ArrayList<Document>());
+        List<String> keys = new ArrayList<>();
+        for (Document document : documents) {
+            keys.add(document.get("name").toString());
+        }
+        return keys.toArray(new String[0]);
     }
 
 

@@ -4,6 +4,7 @@ import de.craftlancer.core.Utils;
 import de.craftlancer.core.util.MessageLevel;
 import de.craftlancer.core.util.MessageUtil;
 import net.craftcitizen.imagemaps.ImageMaps;
+import net.craftcitizen.imagemaps.db.ImageThings;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.ClickEvent;
@@ -27,15 +28,16 @@ public class ImageMapListCommand extends ImageMapSubCommand {
             return null;
         }
 
-        String[] fileList = new File(plugin.getDataFolder(), "images").list();
+        // String[] fileList = new File(plugin.getDataFolder(), "images").list();
+        String[] NFTList = ImageThings.getAllPlacedNFTs();
         long page = args.length >= 2 ? Utils.parseIntegerOrDefault(args[1], 0) - 1 : 0;
-        int numPages = (int) Math.ceil((double) fileList.length / Utils.ELEMENTS_PER_PAGE);
+        int numPages = (int) Math.ceil((double) NFTList.length / Utils.ELEMENTS_PER_PAGE);
 
 
         MessageUtil.sendMessage(plugin, sender, MessageLevel.INFO, String.format("## Image List Page %d of %d ##", page + 1, numPages));
 
         boolean even = false;
-        for (String filename : Utils.paginate(fileList, page)) {
+        for (String filename : Utils.paginate(NFTList, page)) {
             BaseComponent infoAction = new TextComponent("[Info]");
             infoAction.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, String.format("/imagemap info \"%s\"", filename)));
             infoAction.setColor(ChatColor.GOLD);
