@@ -76,8 +76,8 @@ public class ImageMapPlaceCommand extends ImageMapSubCommand {
         // get an image
         ImageThings iT = new ImageThings("craft178n8r8wmkjy2e3ark3c2dhp4jma0r6zwce9z7k");
         // iT.get
-        byte[] byteArray = iT.loadImageFromMongDB("ninja");
-        BufferedImage image = iT.toBufferedImage(byteArray);
+        BufferedImage image = iT.loadImageFromMongDB("ninja");
+
         System.out.println("Loaded image in ImageMapPlaceCommand.java");
 
         Player player = (Player) sender; // TODO: Update placement data to use NFT name

@@ -270,9 +270,9 @@ public class ImageMaps extends JavaPlugin implements Listener {
         // get an image
         ImageThings iT = new ImageThings("craft178n8r8wmkjy2e3ark3c2dhp4jma0r6zwce9z7k");
         // iT.get
-        byte[] byteArray = iT.loadImageFromMongDB("1170");
-        BufferedImage image = iT.toBufferedImage(byteArray);
-        System.out.println("Loaded image in getImage + ImageMaps.java");
+        BufferedImage image = iT.loadImageFromMongDB(NFTName);
+        // BufferedImage image = iT.toBufferedImage(byteArray);
+        System.out.println("Loaded image in getImage "+NFTName+" (ImageMaps.java)");
 
 
         // if (!file.exists())

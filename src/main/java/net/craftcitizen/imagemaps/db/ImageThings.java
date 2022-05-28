@@ -38,25 +38,24 @@ public class ImageThings {
     static MongoCollection<Document> collection = database.getCollection("OWNERS");
     static MongoCollection<Document> PLACED_NFTS = database.getCollection("PLACED_NFTS");
 
-
-
-
-    static String address = null;    
+    private Document doc = null;
+    private String address = null;
+      
     public ImageThings(String address) {
-        Document doc = getDocument(address);
+        doc = getDocument(address);
         if(doc == null) {
             System.out.println("You dont have any NFTs, make sure to sync you wallet with the webapp...");
-        } // TODO I could just have it auto create a doc for them? or no
+        }
     }
 
     // ---
-    private static Document getDocument(String address) {
+    private Document getDocument(String address) {
         Document query = new Document("address", address);
         Document doc = collection.find(query).first();
         return doc;
     }
 
-    public static String getIPFSLink(Document doc, String name) {
+    public String getIPFSLink(String name) {
         Document nftDoc = (Document) doc.get("nfts");
         String myLink = (String) nftDoc.get(name);
         if (myLink == null) {
@@ -66,7 +65,7 @@ public class ImageThings {
     }
 
     // gets all NFT Names
-    public static Set<String> getNFTNames(Document doc) {
+    public Set<String> getNFTNames() {
         Document nftDoc = (Document) doc.get("nfts");        
         if (nftDoc == null) {
             return null;
@@ -74,7 +73,7 @@ public class ImageThings {
         return nftDoc.keySet();
     }
 
-    public static Map<String, ArrayList<String>> sortNFts(Document doc) {
+    public Map<String, ArrayList<String>> sortNFts() {
         // useful for the GUI
         Map<String, ArrayList<String>> OurNFTs = new HashMap<String, ArrayList<String>>();
 
@@ -118,7 +117,7 @@ public class ImageThings {
         return OurNFTs;
     }
 
-    public static void getAllDocsFromCollection(MongoCollection<Document> collection) {
+    public void getAllDocsFromCollection() {
         List<Document> documents = (List<Document>) collection.find().into(new ArrayList<Document>());
         // print them
         for (Document document : documents) {
@@ -166,7 +165,7 @@ public class ImageThings {
 
     // Will try gridfs if this doesnt work
     // https://kb.objectrocket.com/mongo-db/how-to-save-an-image-in-mongodb-using-java-394
-    public static void saveImageIOToMongoDB(BufferedImage image, String name) {
+    public void saveImageIOToMongoDB(BufferedImage image, String name) {
         byte[] imageBytes = toByteArray(image, "png");
 
         Document doc = new Document("name", name);
@@ -182,7 +181,7 @@ public class ImageThings {
         PLACED_NFTS.insertOne(doc);
     }
 
-    public byte[] loadImageFromMongDB(String name) {
+    public BufferedImage loadImageFromMongDB(String name) {
         // load images which are on the server (useful for reboots)
 
         Document query = new Document("name", name);
@@ -194,15 +193,17 @@ public class ImageThings {
         }
 
         String myImgString = (String) doc.get("image");
+        System.out.println("ImageThings.java loadImageFromMongDB: " + name + " ");
         // System.out.println("Image String: " + myImgString);
         // decode to bvytes
-        byte[] decodedImage = decodeBase64String(myImgString);        
-        return decodedImage; // we are able to load in game with this yes?
+        byte[] decodedBytes = decodeBase64String(myImgString);  
+        // return decodedImage;  
+        return toBufferedImage(decodedBytes);        
     }
 
     // convert BufferedImage to byte[] to save in MongoDB
     // https://mkyong.com/java/how-to-convert-bufferedimage-to-byte-in-java/
-    public static byte[] toByteArray(java.awt.image.BufferedImage image, String format){
+    private byte[] toByteArray(java.awt.image.BufferedImage image, String format){
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         try {
             ImageIO.write(image, format, baos);
@@ -213,11 +214,8 @@ public class ImageThings {
         return bytes;
 
     }
-
-    
-
     // convert byte[] to BufferedImage
-    public java.awt.image.BufferedImage toBufferedImage(byte[] bytes) {
+    private java.awt.image.BufferedImage toBufferedImage(byte[] bytes) {
 
         InputStream is = new ByteArrayInputStream(bytes);
         java.awt.image.BufferedImage bi = null;
@@ -229,12 +227,10 @@ public class ImageThings {
         return bi;
 
     }
-
-
-    private static String encodeBase64String(byte[] binaryData) {
+    private String encodeBase64String(byte[] binaryData) {
         return Base64.getEncoder().encodeToString(binaryData);
     }
-    private static byte[] decodeBase64String(String base64String) {
+    private byte[] decodeBase64String(String base64String) {
         return Base64.getDecoder().decode(base64String);
     }
 
