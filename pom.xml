@@ -37,8 +37,16 @@
       <artifactId>mongo-java-driver</artifactId>
       <version>3.12.11</version>
       <!-- <scope>provided</scope> To fix java.lang.LinkageError: loader constraint violation: loader 'craft-companies.jar' error? -->
-      <groupId>org.mongodb</groupId>
+      <groupId>org.mongodb</groupId>      
     </dependency>
+    
+    <!-- https://mvnrepository.com/artifact/org.mongodb/bson -->
+    <dependency>
+      <groupId>org.mongodb</groupId>
+      <artifactId>bson</artifactId>
+      <version>3.0.0</version>
+    </dependency>
+
 
     <dependency>
       <groupId>org.spigotmc</groupId>
@@ -72,7 +80,7 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-shade-plugin</artifactId>
         <version>3.2.4</version>
-        <configuration>
+        <!-- <configuration>
           <filters>
             <filter>
               <artifact>de.craftlancer:clcore</artifact>
@@ -82,6 +90,7 @@
                 <include>de/craftlancer/core/LambdaRunnable*</include>
                 <include>de/craftlancer/core/Utils*</include>
                 <include>de/craftlancer/core/SemanticVersion*</include>
+                <include></include>
               </includes>
             </filter>
           </filters>
@@ -96,7 +105,7 @@
               <shadedPattern>net.craftcitizen.imagemaps.clcore</shadedPattern>
             </relocation>
           </relocations>
-        </configuration>
+        </configuration> -->
         <executions>
           <execution>
             <phase>package</phase>
@@ -106,6 +115,7 @@
           </execution>
         </executions>
       </plugin>
+      
 
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>

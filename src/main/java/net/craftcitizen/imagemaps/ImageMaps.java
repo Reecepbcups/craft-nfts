@@ -7,6 +7,7 @@ import de.craftlancer.core.Utils;
 import de.craftlancer.core.util.MessageLevel;
 import de.craftlancer.core.util.MessageUtil;
 import de.craftlancer.core.util.Tuple;
+import net.craftcitizen.imagemaps.db.ImageThings;
 import net.craftcitizen.imagemaps.enums.PlacementResult;
 import net.craftcitizen.imagemaps.event.ImagePlaceEvent;
 import net.craftcitizen.imagemaps.handlers.ImageMapCommandHandler;
@@ -158,6 +159,7 @@ public class ImageMaps extends JavaPlugin implements Listener {
     }
 
     private void saveMaps() {
+        // TODO: Save to MOngoDB
         FileConfiguration config = new YamlConfiguration();
         config.set(CONFIG_VERSION_KEY, CONFIG_VERSION);
         config.set("maps", maps.entrySet().stream().collect(Collectors.toMap(Entry::getValue, Entry::getKey)));
@@ -177,6 +179,7 @@ public class ImageMaps extends JavaPlugin implements Listener {
     }
 
     private void loadMaps() {
+        // TODO: Save to MOngoDB
         File configFile = new File(getDataFolder(), MAPS_YML);
 
         if (!configFile.exists())
@@ -250,27 +253,33 @@ public class ImageMaps extends JavaPlugin implements Listener {
         return file.exists() && getImage(filename) != null;
     }
 
-    public BufferedImage getImage(String filename) {
-        if (filename.contains("/") || filename.contains("\\") || filename.contains(":")) {
-            getLogger().warning("Someone tried to get image with illegal characters in file name.");
-            return null;
-        }
+    public BufferedImage getImage(String NFTName) {
+        // Gets image or adds it to cache
 
-        if (imageCache.containsKey(filename.toLowerCase()))
-            return imageCache.get(filename.toLowerCase());
+        // TODO WIP
+        // if (filename.contains("/") || filename.contains("\\") || filename.contains(":")) {
+        //     getLogger().warning("Someone tried to get image with illegal characters in file name.");
+        //     return null;
+        // }
 
-        File file = new File(getDataFolder(), IMAGES_DIR + File.separatorChar + filename);
-        BufferedImage image = null;
+        if (imageCache.containsKey(NFTName.toLowerCase()))
+            return imageCache.get(NFTName.toLowerCase());
 
-        if (!file.exists())
-            return null;
+        // File file = new File(getDataFolder(), IMAGES_DIR + File.separatorChar + filename);
+        // BufferedImage image = null;
+        // get an image
+        ImageThings iT = new ImageThings("craft178n8r8wmkjy2e3ark3c2dhp4jma0r6zwce9z7k");
+        // iT.get
+        byte[] byteArray = iT.loadImageFromMongDB("1170");
+        BufferedImage image = iT.toBufferedImage(byteArray);
+        System.out.println("Loaded image in getImage + ImageMaps.java");
 
-        try {
-            image = ImageIO.read(file);
-            imageCache.put(filename.toLowerCase(), image);
-        } catch (IOException e) {
-            getLogger().log(Level.SEVERE, String.format("Error while trying to read image %s.", file.getName()), e);
-        }
+
+        // if (!file.exists())
+        //     return null;
+
+        // image = ImageIO.read(file);
+        imageCache.put(NFTName.toLowerCase(), image);
 
         return image;
     }
@@ -331,8 +340,8 @@ public class ImageMaps extends JavaPlugin implements Listener {
             return PlacementResult.INVALID_FACING;
 
         Block b = block.getRelative(face);
-        BufferedImage image = getImage(data.getFilename());
-        Tuple<Integer, Integer> size = getImageSize(data.getFilename(), data.getSize());
+        BufferedImage image = getImage(data.getNFTName());
+        Tuple<Integer, Integer> size = getImageSize(data.getImage(), data.getSize());
         BlockFace widthDirection = calculateWidthDirection(player, face);
         BlockFace heightDirection = calculateHeightDirection(player, face);
 
@@ -429,7 +438,7 @@ public class ImageMaps extends JavaPlugin implements Listener {
     private ItemStack getMapItem(BufferedImage image, int x, int y, PlacementData data) {
         ItemStack item = new ItemStack(Material.FILLED_MAP);
 
-        ImageMap imageMap = new ImageMap(data.getFilename(), x, y, getScale(image, data.getSize()));
+        ImageMap imageMap = new ImageMap(data.getNFTName(), x, y, getScale(image, data.getSize()));
         if (maps.containsKey(imageMap)) {
             MapMeta meta = (MapMeta) item.getItemMeta();
             meta.setMapId(maps.get(imageMap));
@@ -451,8 +460,8 @@ public class ImageMaps extends JavaPlugin implements Listener {
         return item;
     }
 
-    public Tuple<Integer, Integer> getImageSize(String filename, Tuple<Integer, Integer> size) {
-        BufferedImage image = getImage(filename);
+    public Tuple<Integer, Integer> getImageSize(BufferedImage image, Tuple<Integer, Integer> size) {
+        // BufferedImage image = getImage(filename);
 
         if (image == null)
             return new Tuple<>(0, 0);

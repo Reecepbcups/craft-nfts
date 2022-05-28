@@ -2,23 +2,27 @@ package net.craftcitizen.imagemaps.images;
 
 import de.craftlancer.core.util.Tuple;
 
+import java.awt.image.BufferedImage;
+
 /**
  * Data associated with placing an image.
  */
 public class PlacementData {
 
-    private final String filename;
+    private final String NFTName;
     private final boolean isInvisible;
     private final boolean isFixed;
     private final boolean isGlowing;
     private final Tuple<Integer, Integer> scale;
+    private final BufferedImage bImage;
 
-    public PlacementData(String filename, boolean isInvisible, boolean isFixed, boolean isGlowing, Tuple<Integer, Integer> scale) {
-        this.filename = filename;
+    public PlacementData(String NFTName, BufferedImage bImage, boolean isInvisible, boolean isFixed, boolean isGlowing, Tuple<Integer, Integer> scale) {
+        this.NFTName = NFTName;
         this.isInvisible = isInvisible;
         this.isFixed = isFixed;
         this.isGlowing = isGlowing;
         this.scale = scale;
+        this.bImage = bImage;
     }
 
     /**
@@ -26,8 +30,12 @@ public class PlacementData {
      *
      * @return the file name of the image
      */
-    public String getFilename() {
-        return filename;
+    public String getNFTName() {
+        return NFTName;
+    }
+
+    public BufferedImage getImage() {
+        return bImage;
     }
 
     /**

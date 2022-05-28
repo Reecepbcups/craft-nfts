@@ -5,6 +5,7 @@ import de.craftlancer.core.util.MessageLevel;
 import de.craftlancer.core.util.MessageUtil;
 import de.craftlancer.core.util.Tuple;
 import net.craftcitizen.imagemaps.ImageMaps;
+import net.craftcitizen.imagemaps.db.ImageThings;
 import net.craftcitizen.imagemaps.images.PlacementData;
 
 import org.bukkit.command.Command;
@@ -12,6 +13,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.metadata.FixedMetadataValue;
 
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.util.Arrays;
 import java.util.Collections;
@@ -21,6 +23,7 @@ public class ImageMapPlaceCommand extends ImageMapSubCommand {
 
     // What I want:
     // - /imagemap place rat 1x1 false
+    // TODO WIP
 
     public ImageMapPlaceCommand(ImageMaps plugin) {
         super("imagemaps.place", plugin, false);
@@ -38,39 +41,49 @@ public class ImageMapPlaceCommand extends ImageMapSubCommand {
             return null;
         }
 
-        String filename = args[1];
+        String nftName = args[1];
         boolean isInvisible = true;
-        boolean isFixed = false;
+        boolean isFixed = true;
         boolean isGlowing = false;
-        Tuple<Integer, Integer> scale;
+        Tuple<Integer, Integer> scale = args.length >= 3 ? parseScale(args[2]) : new Tuple<>(-1, -1);
 
-        if (getPlugin().isInvisibilitySupported()) {
-            // isInvisible = args.length >= 3 && Boolean.parseBoolean(args[2]);
-            // isFixed = args.length >= 4 && Boolean.parseBoolean(args[3]);
-            if (getPlugin().isGlowingSupported()) {
-                isGlowing = args.length >= 5 && Boolean.parseBoolean(args[4]);
-                scale = args.length >= 6 ? parseScale(args[5]) : new Tuple<>(-1, -1);
-            } else {
-                scale = args.length >= 5 ? parseScale(args[4]) : new Tuple<>(-1, -1);
-            }
-        } else {
-            scale = args.length >= 3 ? parseScale(args[2]) : new Tuple<>(-1, -1);
-        }
+        // if (getPlugin().isInvisibilitySupported()) {
+        //     // isInvisible = args.length >= 3 && Boolean.parseBoolean(args[2]);
+        //     // isFixed = args.length >= 4 && Boolean.parseBoolean(args[3]);
+        //     if (getPlugin().isGlowingSupported()) {
+        //         isGlowing = args.length >= 5 && Boolean.parseBoolean(args[4]);
+        //         scale = args.length >= 6 ? parseScale(args[5]) : new Tuple<>(-1, -1);
+        //     } else {
+        //         scale = args.length >= 5 ? parseScale(args[4]) : new Tuple<>(-1, -1);
+        //     }
+        // } else {
+        //     scale = args.length >= 3 ? parseScale(args[2]) : new Tuple<>(-1, -1);
+        // }
 
-        if (filename.contains("/") || filename.contains("\\") || filename.contains(":")) {
-            MessageUtil.sendMessage(getPlugin(), sender, MessageLevel.WARNING, "Filename contains illegal character.");
+        if (nftName.contains("/") || nftName.contains("\\") || nftName.contains(":")) {
+            MessageUtil.sendMessage(getPlugin(), sender, MessageLevel.WARNING, "NFTName contains illegal character.");
             return null;
         }
 
-        if (!getPlugin().hasImage(filename)) {
-            MessageUtil.sendMessage(getPlugin(), sender, MessageLevel.WARNING, "No image with this name exists.");
-            return null;
-        }
+        // TODO: Add cache to save mongodb images
+        // if (!getPlugin().hasImage(filename)) {
+        //     MessageUtil.sendMessage(getPlugin(), sender, MessageLevel.WARNING, "No image with this name exists.");
+        //     return null;
+        // }
 
-        Player player = (Player) sender;
-        player.setMetadata(ImageMaps.PLACEMENT_METADATA, new FixedMetadataValue(getPlugin(), new PlacementData(filename, isInvisible, isFixed, isGlowing, scale)));
+        // TODO: Check here if user owns this NFT with their wallet
 
-        Tuple<Integer, Integer> size = getPlugin().getImageSize(filename, scale);
+        // get an image
+        ImageThings iT = new ImageThings("craft178n8r8wmkjy2e3ark3c2dhp4jma0r6zwce9z7k");
+        // iT.get
+        byte[] byteArray = iT.loadImageFromMongDB("ninja");
+        BufferedImage image = iT.toBufferedImage(byteArray);
+        System.out.println("Loaded image in ImageMapPlaceCommand.java");
+
+        Player player = (Player) sender; // TODO: Update placement data to use NFT name
+        player.setMetadata(ImageMaps.PLACEMENT_METADATA, new FixedMetadataValue(getPlugin(), new PlacementData(nftName, image, isInvisible, isFixed, isGlowing, scale)));
+
+        Tuple<Integer, Integer> size = getPlugin().getImageSize(image, scale);
         MessageUtil.sendMessage(getPlugin(),
                 sender,
                 MessageLevel.NORMAL,

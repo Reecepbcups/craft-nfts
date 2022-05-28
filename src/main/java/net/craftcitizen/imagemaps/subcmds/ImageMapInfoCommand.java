@@ -14,8 +14,13 @@ import org.bukkit.command.CommandSender;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.Collections;
 import java.util.List;
+
+import javax.imageio.ImageIO;
 
 public class ImageMapInfoCommand extends ImageMapSubCommand {
 
@@ -36,14 +41,24 @@ public class ImageMapInfoCommand extends ImageMapSubCommand {
         }
 
         String filename = args[1];
-        BufferedImage image = getPlugin().getImage(filename);
+        // BufferedImage image = getPlugin().getImage(filename);
+
+        System.out.println("IMAGEMAPINFOCOMMAND USES THE WRONG URL ON PURPOSE, CHANGE THIS FILE");
+        BufferedImage image = null;
+        try {
+            image = ImageIO.read(new URL("https://lh3.googleusercontent.com/2hDpuTi-0AMKvoZJGd-yKWvK4tKdQr_kLIpB_qSeMau2TNGCNidAosMEvrEXFO9G6tmlFlPQplpwiqirgrIPWnCKMvElaYgI-HiVvXc=w600"));
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         if (image == null) {
             MessageUtil.sendMessage(getPlugin(), sender, MessageLevel.WARNING, "No image with this name exists.");
             return null;
         }
 
-        Tuple<Integer, Integer> size = getPlugin().getImageSize(filename, null);
+        Tuple<Integer, Integer> size = getPlugin().getImageSize(image, null);
         BaseComponent reloadAction = new TextComponent("[Reload]");
         reloadAction.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, String.format("/imagemap reload \"%s\"", filename)));
         reloadAction.setColor(ChatColor.GOLD);

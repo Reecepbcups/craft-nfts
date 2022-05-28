@@ -1,5 +1,4 @@
-package net.craftcitizen.imagemaps;
-
+package net.craftcitizen.imagemaps.db;
 
 import java.io.ByteArrayOutputStream;
 import java.io.ByteArrayInputStream;
@@ -30,13 +29,7 @@ import com.mongodb.client.MongoDatabase;
 import org.bson.Document;
 
 
-public class Main {
-
-    // TODO Idea, when an NFT is palces, could save name => ipfs link as PLACED_NFTS
-    // TODO then on load, we just download it at run time for every placed instance?
-
-    // TODO ^ switch to GridFS if not doing that way
-    
+public class ImageThings {
     private static String URI = "mongodb://root:akashmongodb19pass@782sk60c31ell6dbee3ntqc9lo.ingress.provider-2.prod.ewr1.akash.pub:31543/?authSource=admin";
     private static MongoClient mongoClient = new MongoClient(new MongoClientURI(URI));
 
@@ -45,70 +38,25 @@ public class Main {
     static MongoCollection<Document> collection = database.getCollection("OWNERS");
     static MongoCollection<Document> PLACED_NFTS = database.getCollection("PLACED_NFTS");
 
-    public static void main(String[] args) {
-        System.out.println("Hello World!");
 
 
-        // getAllDocsFromCollection(collection);
-    
-        // we get this from the collection where wallet = username
-        String address = "craft178n8r8wmkjy2e3ark3c2dhp4jma0r6zwce9z7k";
 
+    static String address = null;    
+    public ImageThings(String address) {
         Document doc = getDocument(address);
         if(doc == null) {
             System.out.println("You dont have any NFTs, make sure to sync you wallet with the webapp...");
-        }
-
-        
-        // Set<String> names = getNFTNames(doc);
-        // System.out.println(names);
-
-        // Groups the NFTs by their name
-        Map<String, ArrayList<String>> myNFTsSorted = sortNFts(doc);
-        // System.out.println(myNFTsSorted.keySet());
-        System.out.println();
-        for (String key : myNFTsSorted.keySet()) {
-            // TODO! SOME HAVE A SPACE SO THEY KEY IS ACTUALLY 'NFTName ' before the #.
-            // TODO Need to trim() / .stip() when saving to mongo I guess in the future?
-            // TODO Make them all 'MyNFT#1234' if they have #. Replace spaces with _ ?
-            System.out.println(key + ": " + myNFTsSorted.get(key));
-        }
-        
-
-
-        // would be done via GUI in future
-        // Scanner scanner = new Scanner(System.in);
-        // System.out.println("Enter your NFT name: ");
-        // String nftName = scanner.nextLine();
-        // scanner.close();
-        // String link = getIPFSLink(doc, nftName);
-        // System.out.println(link);
-
-        // we do this when the user wants to place it, so it saves to DB
-        java.awt.image.BufferedImage bImg = downloadNFT("https://ipfs.stargaze.zone/ipfs/bafybeiedtjgjv5azuwuzrv34qfbndyfktnqibrwc2vkwyzqxjw3abu3pra/images/775.png");
-        saveImageIOToMongoDB(bImg, "ninja");
-
-        // load it from the DB
-        // byte[] byteArray = loadImageFromMongDB("1170");
-        // BufferedImage myBufferedImgFromDB = toBufferedImage(byteArray);
-        // JFrame frame = new JFrame();
-        // frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        // frame.setVisible(true);  
-        // frame.getContentPane().add(new JLabel(new ImageIcon(myBufferedImgFromDB)));
-        // frame.pack();
-
-
-
-
+        } // TODO I could just have it auto create a doc for them? or no
     }
 
+    // ---
     private static Document getDocument(String address) {
         Document query = new Document("address", address);
         Document doc = collection.find(query).first();
         return doc;
     }
 
-    private static String getIPFSLink(Document doc, String name) {
+    public static String getIPFSLink(Document doc, String name) {
         Document nftDoc = (Document) doc.get("nfts");
         String myLink = (String) nftDoc.get(name);
         if (myLink == null) {
@@ -118,7 +66,7 @@ public class Main {
     }
 
     // gets all NFT Names
-    private static Set<String> getNFTNames(Document doc) {
+    public static Set<String> getNFTNames(Document doc) {
         Document nftDoc = (Document) doc.get("nfts");        
         if (nftDoc == null) {
             return null;
@@ -126,7 +74,7 @@ public class Main {
         return nftDoc.keySet();
     }
 
-    private static Map<String, ArrayList<String>> sortNFts(Document doc) {
+    public static Map<String, ArrayList<String>> sortNFts(Document doc) {
         // useful for the GUI
         Map<String, ArrayList<String>> OurNFTs = new HashMap<String, ArrayList<String>>();
 
@@ -170,7 +118,7 @@ public class Main {
         return OurNFTs;
     }
 
-    private static void getAllDocsFromCollection(MongoCollection<Document> collection) {
+    public static void getAllDocsFromCollection(MongoCollection<Document> collection) {
         List<Document> documents = (List<Document>) collection.find().into(new ArrayList<Document>());
         // print them
         for (Document document : documents) {
@@ -182,7 +130,7 @@ public class Main {
 
     // === In game stuff ===
     // When a user clicks on a map, we need to get the IPFS Link, Download to memory, and put on the map
-    private static BufferedImage downloadNFT(String link) {
+    public static BufferedImage downloadNFT(String link) {
         // from ImageMapDownload (Download & place should be all in 1)
 
         // May just be able to do a null check, and show without saving to file?
@@ -218,7 +166,7 @@ public class Main {
 
     // Will try gridfs if this doesnt work
     // https://kb.objectrocket.com/mongo-db/how-to-save-an-image-in-mongodb-using-java-394
-    private static void saveImageIOToMongoDB(BufferedImage image, String name) {
+    public static void saveImageIOToMongoDB(BufferedImage image, String name) {
         byte[] imageBytes = toByteArray(image, "png");
 
         Document doc = new Document("name", name);
@@ -234,7 +182,7 @@ public class Main {
         PLACED_NFTS.insertOne(doc);
     }
 
-    private static byte[] loadImageFromMongDB(String name) {
+    public byte[] loadImageFromMongDB(String name) {
         // load images which are on the server (useful for reboots)
 
         Document query = new Document("name", name);
@@ -269,7 +217,7 @@ public class Main {
     
 
     // convert byte[] to BufferedImage
-    public static java.awt.image.BufferedImage toBufferedImage(byte[] bytes) {
+    public java.awt.image.BufferedImage toBufferedImage(byte[] bytes) {
 
         InputStream is = new ByteArrayInputStream(bytes);
         java.awt.image.BufferedImage bi = null;
@@ -289,5 +237,8 @@ public class Main {
     private static byte[] decodeBase64String(String base64String) {
         return Base64.getDecoder().decode(base64String);
     }
+
+    
+
 
 }
