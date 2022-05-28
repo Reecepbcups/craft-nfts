@@ -30,7 +30,7 @@ import com.mongodb.client.MongoDatabase;
 import org.bson.Document;
 
 
-public class Main {
+public class Main_POC {
 
     // TODO Idea, when an NFT is palces, could save name => ipfs link as PLACED_NFTS
     // TODO then on load, we just download it at run time for every placed instance?
