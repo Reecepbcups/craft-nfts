@@ -57,7 +57,7 @@ public class ImageMaps extends JavaPlugin implements Listener {
     private static final String MAPS_YML = "maps.yml";
     private static final String CONFIG_VERSION_KEY = "storageVersion";
     private static final int CONFIG_VERSION = 1;
-    private static final long AUTOSAVE_PERIOD = 18000L; // 15 minutes
+    private static final long AUTOSAVE_PERIOD = 18000L; // 15 minutes. Do we need this?? Just save on place?
 
     public static final String PLACEMENT_METADATA = "imagemaps.place";
 
@@ -77,7 +77,7 @@ public class ImageMaps extends JavaPlugin implements Listener {
     @Override
     public void onEnable() {
         BaseComponent prefix = new TextComponent(
-                new ComponentBuilder("[").color(ChatColor.GRAY).append("ImageMaps").color(ChatColor.AQUA).append("]").color(ChatColor.GRAY).create());
+            new ComponentBuilder("[").color(ChatColor.GRAY).append("CraftNFTs").color(ChatColor.GREEN).append("]").color(ChatColor.GRAY).create());
         MessageUtil.registerPlugin(this, prefix, ChatColor.GRAY, ChatColor.YELLOW, ChatColor.RED, ChatColor.DARK_RED, ChatColor.DARK_AQUA);
 
         if (!new File(getDataFolder(), IMAGES_DIR).exists())

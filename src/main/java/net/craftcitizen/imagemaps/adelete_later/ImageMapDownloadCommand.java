@@ -22,7 +22,7 @@ import java.net.URLConnection;
 public class ImageMapDownloadCommand extends ImageMapSubCommand {
 
     public ImageMapDownloadCommand(ImageMaps plugin) {
-        super("imagemaps.download", plugin, true);
+        super("craftnfts.download", plugin, true);
     }
 
     @Override

@@ -19,7 +19,7 @@ public class ImageMapHelpCommand extends HelpCommand {
     // update syntax
 
     public ImageMapHelpCommand(Plugin plugin, Map<String, SubCommand> map) {
-        super("imagemaps.help", plugin, map);
+        super("craftnfts.help", plugin, map);
     }
 
     @Override

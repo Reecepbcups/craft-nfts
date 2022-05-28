@@ -26,7 +26,7 @@ import javax.imageio.ImageIO;
 public class ImageMapInfoCommand extends ImageMapSubCommand {
 
     public ImageMapInfoCommand(ImageMaps plugin) {
-        super("imagemaps.info", plugin, true);
+        super("craftnfts.info", plugin, true);
     }
 
     @Override

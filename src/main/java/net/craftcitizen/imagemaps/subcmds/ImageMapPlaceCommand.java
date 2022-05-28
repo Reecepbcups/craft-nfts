@@ -26,7 +26,7 @@ public class ImageMapPlaceCommand extends ImageMapSubCommand {
     // TODO WIP
 
     public ImageMapPlaceCommand(ImageMaps plugin) {
-        super("imagemaps.place", plugin, false);
+        super("craftnfts.place", plugin, false);
     }
 
     @Override

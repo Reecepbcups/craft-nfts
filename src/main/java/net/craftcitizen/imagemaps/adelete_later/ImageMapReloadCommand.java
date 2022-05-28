@@ -18,7 +18,7 @@ public class ImageMapReloadCommand extends ImageMapSubCommand {
     // TODO I dont think we even need this class since IPFS images never change.
 
     public ImageMapReloadCommand(ImageMaps plugin) {
-        super("imagemap.reload", plugin, true);
+        super("craftnfts.reload", plugin, true);
     }
 
     @Override

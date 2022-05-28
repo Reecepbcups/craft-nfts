@@ -19,7 +19,7 @@ import java.io.File;
 public class ImageMapListCommand extends ImageMapSubCommand {
 
     public ImageMapListCommand(ImageMaps plugin) {
-        super("imagemaps.list", plugin, true);
+        super("craftnfts.list", plugin, true);
     }
 
     @Override

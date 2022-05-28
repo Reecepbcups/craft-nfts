@@ -16,7 +16,7 @@ import java.util.List;
 public class ImageMapDeleteCommand extends ImageMapSubCommand {
 
     public ImageMapDeleteCommand(ImageMaps plugin) {
-        super("imagemaps.delete", plugin, true);
+        super("craftnfts.delete", plugin, true);
     }
 
     @Override
