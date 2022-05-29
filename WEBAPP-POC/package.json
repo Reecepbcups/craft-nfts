@@ -1,6 +1,0 @@
-{
-  "dependencies": {
-    "@stricahq/typhonjs": "^1.2.0",
-    "bech32-converting": "^1.0.8"
-  }
-}
