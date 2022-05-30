@@ -127,7 +127,9 @@ public class ImageThings {
 
 
     public static String[] getAllPlacedNFTs() {
-        List<Document> documents = (List<Document>) PLACED_NFTS.find().into(new ArrayList<Document>());
+        List<Document> documents = PLACED_NFTS.find().into(new ArrayList<Document>());
+        System.out.println("Size:" + documents.size());
+
         List<String> keys = new ArrayList<>();
         for (Document document : documents) {
             keys.add(document.get("name").toString());

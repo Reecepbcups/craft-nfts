@@ -1,10 +1,12 @@
 main: net.craftcitizen.imagemaps.ImageMaps
-author: SydMontague
+author: SydMontague,Reecepbcups
 version: ${project.version}
 api-version: 1.13
-name: ImageMaps
+api: "1.17"
+name: CraftNFTs
 commands:
-    nfts:
+    imagemap:
+        aliases: ["nft", "nfts", "craftnft", "cnft"]
         description: ImageMaps plugin commands, place images on walls
         permission-message: You do not have permission to use this command.
         usage: |

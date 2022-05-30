@@ -42,7 +42,7 @@ public class Main_POC {
 
     // These would be in main classw tih getters     
     static MongoDatabase database = mongoClient.getDatabase("NFTs");
-    static MongoCollection<Document> collection = database.getCollection("OWNERS");
+    static MongoCollection<Document> collection = database.getCollection("holdings");
     static MongoCollection<Document> PLACED_NFTS = database.getCollection("PLACED_NFTS");
 
     public static void main(String[] args) {
@@ -52,11 +52,12 @@ public class Main_POC {
         // getAllDocsFromCollection(collection);
     
         // we get this from the collection where wallet = username
-        String address = "craft178n8r8wmkjy2e3ark3c2dhp4jma0r6zwce9z7k";
+        String address = "craft12wdcv2lm6uhyh5f6ytjvh2nlkukrmkdk4qt20v";
 
         Document doc = getDocument(address);
         if(doc == null) {
-            System.out.println("You dont have any NFTs, make sure to sync you wallet with the webapp...");
+            System.out.println("You dont have any NFTs, make sure to sync you wallet with the webapp... (py script)");
+            return;
         }
 
         
@@ -78,7 +79,7 @@ public class Main_POC {
 
         // would be done via GUI in future
         Scanner scanner = new Scanner(System.in);
-        System.out.println("Enter your NFT name: ");
+        System.out.println("Enter your NFT name (simulate placement): ");
         String nftName = scanner.nextLine();
         scanner.close();
         String link = getIPFSLink(doc, nftName);
