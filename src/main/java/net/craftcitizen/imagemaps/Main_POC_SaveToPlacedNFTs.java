@@ -30,7 +30,7 @@ import com.mongodb.client.MongoDatabase;
 import org.bson.Document;
 
 
-public class Main_POC {
+public class Main_POC_SaveToPlacedNFTs {
 
     // TODO Idea, when an NFT is palces, could save name => ipfs link as PLACED_NFTS
     // TODO then on load, we just download it at run time for every placed instance?
@@ -138,6 +138,7 @@ public class Main_POC {
 
         Document nfts = (Document) doc.get("nfts");
 
+        System.out.println("\nTHE GOAL HERE IS TO HAVE THIS IN GAME AS GUI");
         for(String key : nfts.keySet()) {
             // This should work for all NFTs, if not they go into other
             // Future we can regex split at # or last space
