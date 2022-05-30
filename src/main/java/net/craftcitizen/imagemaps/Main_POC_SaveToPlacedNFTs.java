@@ -33,7 +33,7 @@ import org.bson.Document;
 public class Main_POC_SaveToPlacedNFTs {
 
     // TODO Idea, when an NFT is palces, could save name => ipfs link as PLACED_NFTS
-    // TODO then on load, we just download it at run time for every placed instance?
+    // TODO then on load, we just download it at run time for every placed instance? (prob too slow of startup >XXX nfts)
 
     // TODO ^ switch to GridFS if not doing that way
     
@@ -79,7 +79,7 @@ public class Main_POC_SaveToPlacedNFTs {
 
         // would be done via GUI in future
         Scanner scanner = new Scanner(System.in);
-        System.out.println("Enter your NFT name (simulate placement): ");
+        System.out.println("Enter your NFT name (download, save to PLACED_NFTS collection): ");
         String nftName = scanner.nextLine();
         scanner.close();
         String link = getIPFSLink(doc, nftName);

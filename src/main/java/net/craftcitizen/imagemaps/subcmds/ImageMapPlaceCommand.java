@@ -138,13 +138,18 @@ public class ImageMapPlaceCommand extends ImageMapSubCommand {
 
         switch (args.length) {
             case 2:
-                return Utils.getMatches(args[1], new File(plugin.getDataFolder(), "images").list());
+                // return Utils.getMatches(args[1], new File(plugin.getDataFolder(), "images").list());
+                // System.out.println("In the future change this to mongodb list of placed/downloaded images (ImageMapPlaceCommand)");
+                return Collections.emptyList();
             case 3:
-                return Utils.getMatches(args[2], Arrays.asList("true", "false"));
+                // return Utils.getMatches(args[2], Arrays.asList("true", "false"));
+                return Collections.emptyList();
             case 4:
-                return Utils.getMatches(args[3], Arrays.asList("true", "false"));
+                // return Utils.getMatches(args[3], Arrays.asList("true", "false"));
+                return Collections.emptyList();
             case 5:
-                return Utils.getMatches(args[4], Arrays.asList("true", "false"));
+                // return Utils.getMatches(args[4], Arrays.asList("true", "false"));
+                return Collections.emptyList();
             default:
                 return Collections.emptyList();
         }
