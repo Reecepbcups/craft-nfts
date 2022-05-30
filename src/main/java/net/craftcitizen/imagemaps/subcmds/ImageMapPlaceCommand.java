@@ -65,6 +65,11 @@ public class ImageMapPlaceCommand extends ImageMapSubCommand {
             return null;
         }
 
+        if(nftName.contains("_")) {            
+            nftName = nftName.replace("_", " ");
+            System.out.println("NFT name contained underscores! moved them to be spaces>> " + nftName);
+        }
+
         // TODO: Add cache to save mongodb images
         // if (!getPlugin().hasImage(filename)) {
         //     MessageUtil.sendMessage(getPlugin(), sender, MessageLevel.WARNING, "No image with this name exists.");
