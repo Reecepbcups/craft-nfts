@@ -198,7 +198,7 @@ public class ImageThings {
         // check if this exist in PLACED_IMAGES collection
         Document doc = PLACED_NFTS.find(query).first();
         if(doc == null) {
-            System.out.println("This image is not found in the collection!");
+            System.out.println("This image is not found in the collection! name: " + name);
             return null;
         }
 
