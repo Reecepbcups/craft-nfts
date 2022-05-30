@@ -78,7 +78,7 @@ def main():
     print(f"\nIN GAME MINECRAFT => All {WALLET}'s NFT Names:\n\n", dict(myDatabaseNFTS['nfts']).keys())
 
     while True: # just so we can confirm the names work, ctrl + c to exit
-        queryNFTName = input("(GUI) WHICH NFT DO YOU WANT TO PLACE? ") or "Starchoadz #6215"
+        queryNFTName = input("(GUI) WHICH NFT DO YOU WANT TO PLACE? (just shows the image here)") or "Starchoadz #6215"
         
         # Query database for address, if there get the nft section, and get queryNFTName
         # if there is no value for queryNFTName, it returns "" which means they dont own that NFT name.
