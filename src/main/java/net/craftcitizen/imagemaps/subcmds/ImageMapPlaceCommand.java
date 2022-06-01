@@ -41,7 +41,7 @@ public class ImageMapPlaceCommand extends ImageMapSubCommand {
             return null;
         }
 
-        String nftName = args[1];
+        String nftName = args[1]; // make sure to replace " " with "_"
         boolean isInvisible = true;
         boolean isFixed = true;
         boolean isGlowing = false;
@@ -79,9 +79,9 @@ public class ImageMapPlaceCommand extends ImageMapSubCommand {
         // TODO: Check here if user owns this NFT with their wallet
 
         // get an image
-        ImageThings iT = new ImageThings("craft178n8r8wmkjy2e3ark3c2dhp4jma0r6zwce9z7k");
+        ImageThings iT = new ImageThings(ImageMaps.MY_ADDRESS);
         // iT.get
-        BufferedImage image = iT.loadImageFromMongDB(nftName);
+        BufferedImage image = ImageThings.loadImageFromMongDB(nftName);
 
         System.out.println("Loaded image in ImageMapPlaceCommand.java");
 
@@ -96,6 +96,18 @@ public class ImageMapPlaceCommand extends ImageMapSubCommand {
         MessageUtil.sendMessage(getPlugin(), sender, MessageLevel.NORMAL, "Right click on the block, that should be the upper left corner.");
         return null;
     }
+
+    // public static String argsToSingleString(final int startPoint, final String[] args) {
+	// 	final StringBuilder str = new StringBuilder();
+	// 	for (int i = startPoint; i < args.length; i++) {
+	// 		if (i+1 < args.length) {
+	// 			str.append(args[i]).append(" ");
+	// 		} else {
+	// 			str.append(args[i]);
+	// 		}
+	// 	}
+	// 	return str.toString();
+	// }
 
     @Override
     public void help(CommandSender sender) {

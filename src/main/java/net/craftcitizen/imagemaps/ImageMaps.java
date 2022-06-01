@@ -66,6 +66,9 @@ public class ImageMaps extends JavaPlugin implements Listener {
     public static final int MAP_HEIGHT = 128;
     private static final String IMAGES_DIR = "images";
 
+    // TODO: Change this it uses a MongoDB collection
+    public static final String MY_ADDRESS = "craft12wdcv2lm6uhyh5f6ytjvh2nlkukrmkdk4qt20v";
+
     private NFTCache cache = null;
 
     private Material toggleItem;

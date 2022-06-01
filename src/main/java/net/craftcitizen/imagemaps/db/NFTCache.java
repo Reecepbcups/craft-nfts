@@ -4,6 +4,10 @@ import java.awt.image.BufferedImage;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.mongodb.client.FindIterable;
+import com.mongodb.client.model.Filters;
+
+import org.bson.Document;
 import org.bukkit.Bukkit;
 
 import net.craftcitizen.imagemaps.rendering.ImageMap;
@@ -34,28 +38,28 @@ public class NFTCache {
     }
 
     public BufferedImage getImage(String NFTName) {
+        NFTName = NFTName.toLowerCase();
         // Gets image or adds it to cache
 
         // gets already placed images. 
-        if (imageCache.containsKey(NFTName.toLowerCase()))
-            return imageCache.get(NFTName.toLowerCase());
+        if (imageCache.containsKey(NFTName))
+            return imageCache.get(NFTName);
 
-        // we should prob do this before hand?
-        ImageThings iT = new ImageThings("craft12wdcv2lm6uhyh5f6ytjvh2nlkukrmkdk4qt20v");
-
-        BufferedImage image = iT.loadImageFromMongDB(NFTName);
-
-        // BufferedImage image = iT.toBufferedImage(byteArray);
-        System.out.println("Loaded image in getImage "+NFTName+" (ImageMaps.java)");
-
-
-        // if (!file.exists())
-        //     return null;
-
-        // image = ImageIO.read(file);
-        imageCache.put(NFTName.toLowerCase(), image);
-
-        return image;
+        // get from IMAGES collection
+        FindIterable<Document> s = ImageThings.IMAGES_COLL.find(Filters.eq("name", NFTName));
+        Document doc = s.first();
+        if (doc == null) {
+            System.out.println("No image found in DB or cache, probably use need to save it from an ImageThing object");
+            return null;
+        }
+        
+        BufferedImage bI = ImageThings.loadImageFromMongDB(NFTName);
+        if (bI == null) {
+            System.out.println("No image found in DB or cache, probably use need to save it from an ImageThing object");
+            return null;
+        }
+        imageCache.put(NFTName, bI);
+        return bI;
     }
 
     public static void deleteImageFromCache(String nftName) { 

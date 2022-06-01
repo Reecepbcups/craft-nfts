@@ -50,7 +50,7 @@ public class ImageThings {
     public ImageThings(String address) {
         doc = getDocument(address);
         if(doc == null) {
-            System.out.println("You dont have any NFTs, make sure to sync you wallet with the webapp...");
+            System.out.println("You dont have any NFTs with "+address+", make sure to sync you wallet with the webapp...");
         }
     }
 
@@ -149,6 +149,8 @@ public class ImageThings {
     public static BufferedImage downloadNFT(String link) {
         // from ImageMapDownload (Download & place should be all in 1)
 
+        // check if nftName is in the database, if so just return that
+
         // May just be able to do a null check, and show without saving to file?
         URL srcURL = null;
         BufferedImage image = null;
@@ -198,7 +200,7 @@ public class ImageThings {
         IMAGES_COLL.insertOne(doc);
     }
 
-    public BufferedImage loadImageFromMongDB(String name) {
+    public static BufferedImage loadImageFromMongDB(String name) {
         // load images which are on the server (useful for reboots)
 
         Document query = new Document("name", name);
@@ -232,7 +234,7 @@ public class ImageThings {
 
     }
     // convert byte[] to BufferedImage
-    private java.awt.image.BufferedImage toBufferedImage(byte[] bytes) {
+    private static java.awt.image.BufferedImage toBufferedImage(byte[] bytes) {
 
         InputStream is = new ByteArrayInputStream(bytes);
         java.awt.image.BufferedImage bi = null;
@@ -244,10 +246,10 @@ public class ImageThings {
         return bi;
 
     }
-    private String encodeBase64String(byte[] binaryData) {
+    private static String encodeBase64String(byte[] binaryData) {
         return Base64.getEncoder().encodeToString(binaryData);
     }
-    private byte[] decodeBase64String(String base64String) {
+    private static byte[] decodeBase64String(String base64String) {
         return Base64.getDecoder().decode(base64String);
     }
 
