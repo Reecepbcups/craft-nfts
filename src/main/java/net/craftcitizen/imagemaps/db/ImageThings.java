@@ -41,14 +41,16 @@ public class ImageThings {
     // static MongoCollection<Document> PLACED_NFTS = database.getCollection("PLACED_NFTS");
     static MongoDatabase database = mongoClient.getDatabase("NFTs");
     static MongoCollection<Document> ASSETS_COLL = database.getCollection("AssetHoldings");
-    static MongoCollection<Document> IMAGES_COLL = database.getCollection("IMAGES");
+    static MongoCollection<Document> IMAGES_COLL = database.getCollection("IMAGES"); // make its own DB, as a GridFS Bucket
     static MongoCollection<Document> PLACED_NFTS_COLL = database.getCollection("PLACED_NFTS"); // maps.yml will be here
 
     private Document doc = null;
-    private String address = null;
+    private final String address;
       
     public ImageThings(String address) {
-        doc = getDocument(address);
+        this.address = address;
+        
+        doc = getDocument(this.address);
         if(doc == null) {
             System.out.println("You dont have any NFTs with "+address+", make sure to sync you wallet with the webapp...");
         }
