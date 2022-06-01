@@ -46,7 +46,7 @@ public class PlacementData {
      *
      * @return whether the placed frames will be fixed or not
      */
-    public boolean isFixed() {
+    public boolean isFixed() { // TODO: Need to ensure we can enable this for admin placed NFTs
         return isFixed;
     }
 
