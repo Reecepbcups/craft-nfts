@@ -37,21 +37,23 @@ public class NFTCache {
         return getImage(nftName) != null;
     }
 
-    public BufferedImage getImage(String NFTName) {
+    public static BufferedImage getImage(String NFTName) {
         NFTName = NFTName.toLowerCase();
         // Gets image or adds it to cache
 
         // gets already placed images. 
-        if (imageCache.containsKey(NFTName))
+        if (imageCache.containsKey(NFTName)) {
             return imageCache.get(NFTName);
+        }
+            
 
         // get from IMAGES collection
-        FindIterable<Document> s = ImageThings.IMAGES_COLL.find(Filters.eq("name", NFTName));
-        Document doc = s.first();
-        if (doc == null) {
-            System.out.println("No image found in DB or cache, probably use need to save it from an ImageThing object");
-            return null;
-        }
+        // FindIterable<Document> s = ImageThings.IMAGES_COLL.find(Filters.eq("name", NFTName));
+        // Document doc = s.first();
+        // if (doc == null) {
+        //     System.out.println("No image found in DB or cache, probably use need to save it from an ImageThing object");
+        //     return null;
+        // }
         
         BufferedImage bI = ImageThings.loadImageFromMongDB(NFTName);
         if (bI == null) {
@@ -60,6 +62,10 @@ public class NFTCache {
         }
         imageCache.put(NFTName, bI);
         return bI;
+    }
+
+    public static void addImage(String NFTName, BufferedImage img) {
+        imageCache.putIfAbsent(NFTName.toLowerCase(), img);
     }
 
     public static void deleteImageFromCache(String nftName) { 

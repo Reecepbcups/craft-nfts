@@ -20,6 +20,7 @@ import de.craftlancer.core.util.MessageLevel;
 import de.craftlancer.core.util.MessageUtil;
 import net.craftcitizen.imagemaps.ImageMaps;
 import net.craftcitizen.imagemaps.db.ImageThings;
+import net.craftcitizen.imagemaps.db.NFTCache;
 import net.craftcitizen.imagemaps.rendering.ImageMap;
 
 import java.io.File;
@@ -129,18 +130,28 @@ public class MainGUI extends ImageMapSubCommand implements Listener {
 			System.out.println("Clicked: " + DisplayName + " in MainGUI.java for ImageMaps (subMenuName)!");
 			// download it from the players wallet thing to the IMAGES collection
 			ImageThings im = new ImageThings(ImageMaps.MY_ADDRESS);	
-			String ipfsLink = im.getIPFSLink(DisplayName);			
-			java.awt.image.BufferedImage bImg = ImageThings.downloadNFT(ipfsLink);
-
-			DisplayName = DisplayName.toLowerCase(); System.out.println("Lowercased " + DisplayName + " since we have to save it like that...");
-        	im.saveImageIOToMongoDB(bImg, DisplayName);
 
 			// open up sub GUI here for 1x1, 2x2, 3x3
 			event.setCancelled(true);
 			p.closeInventory();
+
+			// check if DisplayName is in the cache so we dont have to download
+			java.awt.image.BufferedImage bImg = NFTCache.getImage(DisplayName);			
+
+			if(bImg == null) {
+				p.sendMessage("Image '" + DisplayName + "'' not in the cache, Downloading from chain...");
+				String ipfsLink = im.getIPFSLink(DisplayName);			
+				bImg = ImageThings.downloadNFT(ipfsLink);
+				NFTCache.addImage(DisplayName, bImg);
+				p.sendMessage("Downloaded!");
+			}
+			
+			DisplayName = DisplayName.toLowerCase(); System.out.println("Lowercased " + DisplayName + " since we have to save it like that...");
+        	im.saveImageIOToMongoDB(bImg, DisplayName);
+			
 			// Allow placement
 			// run command for player
-			System.out.println("Running place map command for player as 2x2");
+			System.out.println("Running place map command for player as 2x2\n");
 			p.performCommand("nfts place " + DisplayName.replace(" ", "_") + " 2x2");
 			return;
 		}

@@ -178,6 +178,8 @@ public class ImageThings {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        // Add NFT Cache here in future?
         
         return image;
     }
