@@ -2,18 +2,17 @@
 
 TODO:
 - Take GUI from https://github.com/zDevelopers/ImageOnMap
-- On server start, or reload of images, grab values from MongoDB instead. (Switch to gridfs in future)
-- when you download an image, its bc you want to use it. So do this in the same command / action
 
-- add tab complete support
-
-- when saving, replace spaces with _? This way if a user does _'s it works. Then in GUIS just replace _ -> " "
+Database:
+- GridFS  (https://www.mongodb.com/docs/drivers/java/sync/v4.3/fundamentals/gridfs/#std-label-gridfs-create-bucket)
+- Image Compression (JPG, 75%)
+- Do we need to reload maps on start? If map data is already saved to server, then no. Just new ones
 
 - Remove toLowerCase for NFT names. We want absolute
 - add wallet checks when placing / trying to download
 
 ```
-/image place <NFTName> 1x1
+/image place <NFT_Name> 1x1
 - checks if you own that NFT, or auto populate with your keySet
 - 1x1, 2x2, 3x3 are the biggest normal players can do.
 ```

@@ -64,12 +64,10 @@ public class ImageMaps extends JavaPlugin implements Listener {
 
     public static final int MAP_WIDTH = 128;
     public static final int MAP_HEIGHT = 128;
-    private static final String IMAGES_DIR = "images";
+    // private static final String IMAGES_DIR = "images";
 
     // TODO: Change this it uses a MongoDB collection
     public static final String MY_ADDRESS = "craft12wdcv2lm6uhyh5f6ytjvh2nlkukrmkdk4qt20v";
-
-    private NFTCache cache = null;
 
     private Material toggleItem;
 
@@ -85,8 +83,6 @@ public class ImageMaps extends JavaPlugin implements Listener {
 
         // if (!new File(getDataFolder(), IMAGES_DIR).exists())
         //     new File(getDataFolder(), IMAGES_DIR).mkdirs();
-
-        cache = new NFTCache();
 
         saveDefaultConfig();
 
@@ -200,7 +196,7 @@ public class ImageMaps extends JavaPlugin implements Listener {
                 ImageMap imageMap = (ImageMap) b;
                 @SuppressWarnings("deprecation")
                 MapView map = Bukkit.getMap(id);
-                BufferedImage image = cache.getImage(imageMap.getFilename());
+                BufferedImage image = NFTCache.getImage(imageMap.getFilename());
 
                 if (image == null) {
                     getLogger().warning(() -> "Image file " + imageMap.getFilename() + " not found. Removing map!");
@@ -277,7 +273,7 @@ public class ImageMaps extends JavaPlugin implements Listener {
             return PlacementResult.INVALID_FACING;
 
         Block b = block.getRelative(face);
-        BufferedImage image = cache.getImage(data.getNFTName());
+        BufferedImage image = NFTCache.getImage(data.getNFTName());
         Tuple<Integer, Integer> size = getImageSize(data.getImage(), data.getSize());
         BlockFace widthDirection = calculateWidthDirection(player, face);
         BlockFace heightDirection = calculateHeightDirection(player, face);
@@ -395,7 +391,7 @@ public class ImageMaps extends JavaPlugin implements Listener {
     }
 
     public double getScale(String filename, Tuple<Integer, Integer> size) {
-        return getScale(cache.getImage(filename), size);
+        return getScale(NFTCache.getImage(filename), size);
     }
 
     public double getScale(BufferedImage image, Tuple<Integer, Integer> size) {
