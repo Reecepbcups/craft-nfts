@@ -30,6 +30,14 @@ public class ImageMap implements ConfigurationSerializable {
 
     @Override
     public Map<String, Object> serialize() {
+        /* Could we store the imageName & have sets of the other data such as mapid etc?
+          3903:
+            ==: ImageMaps.Map
+            image: 'IBC Frens #4837'
+            x: 4
+            y: 2
+            scale: 0.32
+        */
         Map<String, Object> map = new HashMap<>();
         map.put("image", filename);
         map.put("x", x);

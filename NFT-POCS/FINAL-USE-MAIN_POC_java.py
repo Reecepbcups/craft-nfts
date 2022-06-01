@@ -31,7 +31,8 @@ CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
 # {"address": "craftaddress", "nfts": {"name": "ipfslink", ...}, "realestate": {"name": "ipfslink", ...}}
 client = MongoClient("mongodb://root:akashmongodb19pass@782sk60c31ell6dbee3ntqc9lo.ingress.provider-2.prod.ewr1.akash.pub:31543/?authSource=admin")
 db = client["NFTs"]
-OWNERS_COLLECTION = db["holdings"]
+OWNERS_COLLECTION = db["AssetHoldings"] 
+OWNERS_COLLECTION.create_index([("address", 1)]) # Does this speed up return times?
 
 
 print("WEBAPP\ncraft12wdcv2lm6uhyh5f6ytjvh2nlkukrmkdk4qt20v (omniflix as well)\ncraft178n8r8wmkjy2e3ark3c2dhp4jma0r6zwce9z7k (stargaze only)") 

@@ -16,8 +16,14 @@ import java.util.Scanner;
 import java.util.Set;
 
 import java.awt.image.BufferedImage;
+// import Color from image
+import java.awt.Color;
 
+import javax.imageio.IIOImage;
 import javax.imageio.ImageIO;
+import javax.imageio.ImageWriteParam;
+import javax.imageio.ImageWriter;
+import javax.imageio.stream.ImageOutputStream;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -26,37 +32,44 @@ import com.mongodb.MongoClient;
 import com.mongodb.MongoClientURI;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.model.Indexes;
 
 import org.bson.Document;
 
 
 public class Main_POC_SaveToPlacedNFTs {
 
-    // TODO Idea, when an NFT is palces, could save name => ipfs link as PLACED_NFTS
-    // TODO then on load, we just download it at run time for every placed instance? (prob too slow of startup >XXX nfts)
+    
 
-    // TODO ^ switch to GridFS if not doing that way
+    // TODO switch to GridFS, 
     
     private static String URI = "mongodb://root:akashmongodb19pass@782sk60c31ell6dbee3ntqc9lo.ingress.provider-2.prod.ewr1.akash.pub:31543/?authSource=admin";
     private static MongoClient mongoClient = new MongoClient(new MongoClientURI(URI));
 
     // These would be in main classw tih getters     
     static MongoDatabase database = mongoClient.getDatabase("NFTs");
-    static MongoCollection<Document> collection = database.getCollection("holdings");
-    static MongoCollection<Document> PLACED_NFTS = database.getCollection("PLACED_NFTS");
+    static MongoCollection<Document> ASSETS_COLL = database.getCollection("AssetHoldings");
+    static MongoCollection<Document> IMAGES_COLL = database.getCollection("IMAGES");
+    static MongoCollection<Document> PLACED_NFTS_COLL = database.getCollection("PLACED_NFTS"); // maps.yml will be here
 
     public static void main(String[] args) {
-        System.out.println("Hello World!");
 
+        ASSETS_COLL.createIndex(Indexes.ascending("address"));        
+        IMAGES_COLL.createIndex(Indexes.ascending("name"));
+        // PLACED_NFTS_COLL.createIndex(Indexes.ascending("mapId"));
 
-        // getAllDocsFromCollection(collection);
+        // for (Document index : COL.listIndexes()) {
+        //     System.out.println(index.toJson());
+        // }
+
+        // getAllDocsFromCollection(ASSETS_COLL);
     
         // we get this from the collection where wallet = username
         String address = "craft12wdcv2lm6uhyh5f6ytjvh2nlkukrmkdk4qt20v";
 
         Document doc = getDocument(address);
         if(doc == null) {
-            System.out.println("You dont have any NFTs, make sure to sync you wallet with the webapp... (py script)");
+            System.out.println("You dont have any NFTs, make sure to sync you wallet with the webapp... (py script for now)");
             return;
         }
 
@@ -79,7 +92,7 @@ public class Main_POC_SaveToPlacedNFTs {
 
         // would be done via GUI in future
         Scanner scanner = new Scanner(System.in);
-        System.out.println("Enter your NFT name (download, save to PLACED_NFTS collection): ");
+        System.out.println("Enter your NFT name (download, save to IMAGES collection): ");
         String nftName = scanner.nextLine();
         scanner.close();
         String link = getIPFSLink(doc, nftName);
@@ -97,15 +110,11 @@ public class Main_POC_SaveToPlacedNFTs {
         // frame.setVisible(true);  
         // frame.getContentPane().add(new JLabel(new ImageIcon(myBufferedImgFromDB)));
         // frame.pack();
-
-
-
-
     }
 
     private static Document getDocument(String address) {
         Document query = new Document("address", address);
-        Document doc = collection.find(query).first();
+        Document doc = ASSETS_COLL.find(query).first();
         return doc;
     }
 
@@ -199,8 +208,18 @@ public class Main_POC_SaveToPlacedNFTs {
             }
             System.out.println(connection.getHeaderField("Content-type"));
 
+            // https://stackoverflow.com/questions/37713773/java-bufferedimage-jpg-compression-without-writing-to-file
             try (InputStream str = connection.getInputStream()) {
-                image = ImageIO.read(str); // FUTURE: compress this to JPG (RGB), see if I can condense
+                image = ImageIO.read(str); 
+
+                // ! convert to JPEG so it compresses do when we upload to mongodb 
+                // BufferedImage result = new BufferedImage(
+                //     image.getWidth(),
+                //     image.getHeight(),
+                //     BufferedImage.TYPE_INT_RGB);
+                // result.createGraphics().drawImage(image, 0, 0, Color.WHITE, null);      
+                // System.out.println("Converted image to JPEG");          
+                // image = result;
 
                 // open image in a frame DEBUGGING
                 // JFrame frame = new JFrame();
@@ -224,15 +243,20 @@ public class Main_POC_SaveToPlacedNFTs {
 
         Document doc = new Document("name", name);
         // check if this exist in PLACED_IMAGES collection
-        if(PLACED_NFTS.find(doc).first() != null) {
+        if(IMAGES_COLL.find(doc).first() != null) {
             // doc already exist, we are not saving it
             System.out.println("This image already exists in the database");
             return;
         }
 
+        if(imageBytes.length == 0) {
+            System.out.println("Not saving " + name + " to db since it is empty");
+            return;
+        }
+
         String imgToSave = encodeBase64String(imageBytes);
         doc.append("image", imgToSave);
-        PLACED_NFTS.insertOne(doc);
+        IMAGES_COLL.insertOne(doc);
     }
 
     private static byte[] loadImageFromMongDB(String name) {
@@ -240,7 +264,7 @@ public class Main_POC_SaveToPlacedNFTs {
 
         Document query = new Document("name", name);
         // check if this exist in PLACED_IMAGES collection
-        Document doc = PLACED_NFTS.find(query).first();
+        Document doc = IMAGES_COLL.find(query).first();
         if(doc == null) {
             System.out.println("This image is not found in the collection! name:" + name);
             return null;
@@ -256,18 +280,16 @@ public class Main_POC_SaveToPlacedNFTs {
     // convert BufferedImage to byte[] to save in MongoDB
     // https://mkyong.com/java/how-to-convert-bufferedimage-to-byte-in-java/
     public static byte[] toByteArray(java.awt.image.BufferedImage image, String format){
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        ByteArrayOutputStream compressed = new ByteArrayOutputStream();    
+        // https://github.com/sarxos/webcam-capture/blob/master/webcam-capture/src/main/java/com/github/sarxos/webcam/util/AdaptiveSizeWriter.java#L52
+        // ^ in the future
         try {
-            ImageIO.write(image, format, baos);
+            ImageIO.write(image, format, compressed);
         } catch (IOException e) {
             e.printStackTrace();
         }
-        byte[] bytes = baos.toByteArray();
-        return bytes;
-
+        return compressed.toByteArray(); // byte[] bytes
     }
-
-    
 
     // convert byte[] to BufferedImage
     public static java.awt.image.BufferedImage toBufferedImage(byte[] bytes) {

@@ -35,9 +35,14 @@ public class ImageThings {
     private static MongoClient mongoClient = new MongoClient(new MongoClientURI(URI));
 
     // These would be in main classw tih getters     
+
+    // static MongoDatabase database = mongoClient.getDatabase("NFTs");
+    // static MongoCollection<Document> collection = database.getCollection("OWNERS");
+    // static MongoCollection<Document> PLACED_NFTS = database.getCollection("PLACED_NFTS");
     static MongoDatabase database = mongoClient.getDatabase("NFTs");
-    static MongoCollection<Document> collection = database.getCollection("OWNERS");
-    static MongoCollection<Document> PLACED_NFTS = database.getCollection("PLACED_NFTS");
+    static MongoCollection<Document> ASSETS_COLL = database.getCollection("AssetHoldings");
+    static MongoCollection<Document> IMAGES_COLL = database.getCollection("IMAGES");
+    static MongoCollection<Document> PLACED_NFTS_COLL = database.getCollection("PLACED_NFTS"); // maps.yml will be here
 
     private Document doc = null;
     private String address = null;
@@ -52,7 +57,7 @@ public class ImageThings {
     // ---
     private Document getDocument(String address) {
         Document query = new Document("address", address);
-        Document doc = collection.find(query).first();
+        Document doc = ASSETS_COLL.find(query).first();
         return doc;
     }
 
@@ -118,7 +123,7 @@ public class ImageThings {
     }
 
     public void getAllDocsFromCollection() {
-        List<Document> documents = (List<Document>) collection.find().into(new ArrayList<Document>());
+        List<Document> documents = (List<Document>) ASSETS_COLL.find().into(new ArrayList<Document>());
         // print them
         for (Document document : documents) {
             System.out.println(document);
@@ -127,7 +132,7 @@ public class ImageThings {
 
 
     public static String[] getAllPlacedNFTs() {
-        List<Document> documents = PLACED_NFTS.find().into(new ArrayList<Document>());
+        List<Document> documents = IMAGES_COLL.find().into(new ArrayList<Document>());
         System.out.println("Size:" + documents.size());
 
         List<String> keys = new ArrayList<>();
@@ -182,7 +187,7 @@ public class ImageThings {
 
         Document doc = new Document("name", name);
         // check if this exist in PLACED_IMAGES collection
-        if(PLACED_NFTS.find(doc).first() != null) {
+        if(IMAGES_COLL.find(doc).first() != null) {
             // doc already exist, we are not saving it
             System.out.println("This image already exists in the database");
             return;
@@ -190,7 +195,7 @@ public class ImageThings {
 
         String imgToSave = encodeBase64String(imageBytes);
         doc.append("image", imgToSave);
-        PLACED_NFTS.insertOne(doc);
+        IMAGES_COLL.insertOne(doc);
     }
 
     public BufferedImage loadImageFromMongDB(String name) {
@@ -198,7 +203,7 @@ public class ImageThings {
 
         Document query = new Document("name", name);
         // check if this exist in PLACED_IMAGES collection
-        Document doc = PLACED_NFTS.find(query).first();
+        Document doc = IMAGES_COLL.find(query).first();
         if(doc == null) {
             System.out.println("This image is not found in the collection! name: " + name);
             return null;
