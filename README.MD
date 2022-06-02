@@ -8,7 +8,6 @@ Database:
 - Image Compression (JPG, 75%)
 - Do we need to reload maps on start? If map data is already saved to server, then no. Just new ones
 
-- Remove toLowerCase for NFT names. We want absolute
 - add wallet checks when placing / trying to download
 
 ```
