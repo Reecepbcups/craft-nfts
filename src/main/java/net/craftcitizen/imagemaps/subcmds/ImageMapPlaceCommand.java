@@ -6,16 +6,17 @@ import de.craftlancer.core.util.MessageUtil;
 import de.craftlancer.core.util.Tuple;
 import net.craftcitizen.imagemaps.ImageMaps;
 import net.craftcitizen.imagemaps.db.ImageThings;
+import net.craftcitizen.imagemaps.db.NFTCache;
 import net.craftcitizen.imagemaps.images.PlacementData;
 
+import org.bukkit.GameMode;
+import org.bukkit.Warning.WarningState;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.metadata.FixedMetadataValue;
 
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -43,7 +44,7 @@ public class ImageMapPlaceCommand extends ImageMapSubCommand {
 
         String nftName = args[1]; // make sure to replace " " with "_"
         boolean isInvisible = true;
-        boolean isFixed = true;
+        boolean isFixed = false; // means user can not break in survival
         boolean isGlowing = false;
         Tuple<Integer, Integer> scale = args.length >= 3 ? parseScale(args[2]) : new Tuple<>(-1, -1);
 
@@ -70,22 +71,66 @@ public class ImageMapPlaceCommand extends ImageMapSubCommand {
             System.out.println("NFT name contained underscores! moved them to be spaces>> " + nftName);
         }
 
-        // TODO: Add cache to save mongodb images
-        // if (!getPlugin().hasImage(filename)) {
-        //     MessageUtil.sendMessage(getPlugin(), sender, MessageLevel.WARNING, "No image with this name exists.");
+
+        // If user owns NFT, continue
+        ImageThings iT = new ImageThings(ImageMaps.MY_ADDRESS);
+
+        // TODO
+        // if(!iT.getMyNFTNames().contains(nftName)) {
+        //     System.out.println(iT.getMyNFTNames());
+        //     MessageUtil.sendMessage(getPlugin(), sender, MessageLevel.WARNING, "You don't own this NFT." + ImageMaps.MY_ADDRESS + " -> " + nftName);
         //     return null;
         // }
 
-        // TODO: Check here if user owns this NFT with their wallet
+        
+        // Get cached version, if none, get from MongoDB
+        BufferedImage image = null;
 
-        // get an image
-        ImageThings iT = new ImageThings(ImageMaps.MY_ADDRESS);
-        // iT.get
-        BufferedImage image = ImageThings.loadImageFromMongDB(nftName);
+        // System.out.println("TESTING 18923893");
+        // System.out.println(ImageThings.getAllSavedNFTFilenames() + "");
+        // System.out.println(ImageThings.getAllSavedNFTFilenames().contains(nftName));
+
+        if(!ImageThings.getAllSavedNFTFilenames().contains(nftName)) {
+            System.out.println("NFT is not in the database, we need to upload it & cache!");
+
+            String link = iT.getIPFSLink(nftName); // This will return null if we try to change the name of the NFT before getting it (ex. lowercase, or _)
+            if(link == null) { // HOW?
+                MessageUtil.sendMessage(getPlugin(), sender, MessageLevel.WARNING, "Error, " + nftName + " could not download from link");
+                return null;
+            }
+
+            image = ImageThings.downloadNFT(link);
+            if(image == null) {
+                MessageUtil.sendMessage(getPlugin(), sender, MessageLevel.WARNING, "Could not download NFT, " + nftName);
+                return null;
+            }
+
+            // add to cache first since the upload is async
+            // NFTCache.addImage(nftName, image); // done in ImageThings.uploadAsyncToMongo
+
+            // adds to cache, then upload it to MongoDB async
+            ImageThings.uploadAsyncToMongo(nftName, image); 
+            System.out.println(nftName + " was added to the cache & uploaded to MongoDB!");
+        }
+                    
+       
+        if(image == null) {
+            // get image from cache, if its not there it gets from MongoDB
+            image = NFTCache.getImage(nftName);
+        }
+        
+        if(image == null) {
+            MessageUtil.sendMessage(plugin, sender, MessageLevel.WARNING, "This NFT was not in cache nor in the database. Make sure you synced.");
+            return null;
+        }
 
         System.out.println("Loaded image in ImageMapPlaceCommand.java");
 
-        Player player = (Player) sender; // TODO: Update placement data to use NFT name
+        Player player = (Player) sender;
+        if(player.getGameMode().equals(GameMode.CREATIVE)) {
+            MessageUtil.sendMessage(getPlugin(), sender, MessageLevel.INFO, "Since you placed this in creative, users in survival can not break.");
+            isFixed = true; // so users can not break it in survival
+        }
         player.setMetadata(ImageMaps.PLACEMENT_METADATA, new FixedMetadataValue(getPlugin(), new PlacementData(nftName, image, isInvisible, isFixed, isGlowing, scale)));
 
         Tuple<Integer, Integer> size = getPlugin().getImageSize(image, scale);
@@ -97,6 +142,7 @@ public class ImageMapPlaceCommand extends ImageMapSubCommand {
         return null;
     }
 
+    // Just use underscores
     // public static String argsToSingleString(final int startPoint, final String[] args) {
 	// 	final StringBuilder str = new StringBuilder();
 	// 	for (int i = startPoint; i < args.length; i++) {
