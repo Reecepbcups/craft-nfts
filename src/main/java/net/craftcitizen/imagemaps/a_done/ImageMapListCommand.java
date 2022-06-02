@@ -30,7 +30,7 @@ public class ImageMapListCommand extends ImageMapSubCommand {
         }
 
         // String[] fileList = new File(plugin.getDataFolder(), "images").list();
-        String[] NFTList = ImageThings.getAllPlacedNFTs();
+        String[] NFTList = ImageThings.getAllSavedNFTFilenames().toArray(new String[0]);
         long page = args.length >= 2 ? Utils.parseIntegerOrDefault(args[1], 0) - 1 : 0;
         int numPages = (int) Math.ceil((double) NFTList.length / Utils.ELEMENTS_PER_PAGE);
 

@@ -4,10 +4,6 @@ import java.awt.image.BufferedImage;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.mongodb.client.FindIterable;
-import com.mongodb.client.model.Filters;
-
-import org.bson.Document;
 import org.bukkit.Bukkit;
 
 import net.craftcitizen.imagemaps.rendering.ImageMap;
@@ -30,7 +26,7 @@ public class NFTCache {
     }
 
     public boolean hasImage(String nftName) {
-        if (imageCache.containsKey(nftName.toLowerCase())) {
+        if (imageCache.containsKey(nftName)) {
             return true;
         }
             
@@ -38,7 +34,6 @@ public class NFTCache {
     }
 
     public static BufferedImage getImage(String NFTName) {
-        NFTName = NFTName.toLowerCase();
         // Gets image or adds it to cache
 
         // gets already placed images. 
@@ -55,7 +50,7 @@ public class NFTCache {
         //     return null;
         // }
         
-        BufferedImage bI = ImageThings.loadImageFromMongDB(NFTName);
+        BufferedImage bI = ImageThings.loadFromMongo(NFTName);
         if (bI == null) {
             System.out.println("No image found in DB or cache, probably use need to save it from an ImageThing object");
             return null;
@@ -65,7 +60,7 @@ public class NFTCache {
     }
 
     public static void addImage(String NFTName, BufferedImage img) {
-        imageCache.putIfAbsent(NFTName.toLowerCase(), img);
+        imageCache.putIfAbsent(NFTName, img);
     }
 
     public static void deleteImageFromCache(String nftName) { 
@@ -76,10 +71,10 @@ public class NFTCache {
     @SuppressWarnings("deprecation")
     public boolean reloadImage(String nftName) {
         // used to be in ImageMaps.java
-        if (!imageCache.containsKey(nftName.toLowerCase()))
+        if (!imageCache.containsKey(nftName))
             return false;
 
-        imageCache.remove(nftName.toLowerCase());
+        imageCache.remove(nftName);
         BufferedImage image = getImage(nftName);
 
         if (image == null) {

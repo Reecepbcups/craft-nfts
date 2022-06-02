@@ -75,8 +75,10 @@ public class ImageMaps extends JavaPlugin implements Listener {
         ConfigurationSerialization.registerClass(ImageMap.class);
     }
 
+    private static ImageMaps plugin;
     @Override
     public void onEnable() {
+        plugin = this;
         BaseComponent prefix = new TextComponent(
             new ComponentBuilder("[").color(ChatColor.GRAY).append("CraftNFTs").color(ChatColor.GREEN).append("]").color(ChatColor.GRAY).create());
         MessageUtil.registerPlugin(this, prefix, ChatColor.GRAY, ChatColor.YELLOW, ChatColor.RED, ChatColor.DARK_RED, ChatColor.DARK_AQUA);
@@ -159,6 +161,10 @@ public class ImageMaps extends JavaPlugin implements Listener {
         return version.getMajor() >= 1 && version.getMinor() >= 14;
     }
 
+    public static ImageMaps getPlugin() {
+        return plugin;
+    }
+
     private void saveMaps() {
         // TODO: Save to MOngoDB
         FileConfiguration config = new YamlConfiguration();
@@ -196,6 +202,7 @@ public class ImageMaps extends JavaPlugin implements Listener {
                 ImageMap imageMap = (ImageMap) b;
                 @SuppressWarnings("deprecation")
                 MapView map = Bukkit.getMap(id);
+                // TODO: This breaks on restart: No file found with the filename: huanots #286 and revision: -1
                 BufferedImage image = NFTCache.getImage(imageMap.getFilename());
 
                 if (image == null) {
@@ -326,7 +333,7 @@ public class ImageMaps extends JavaPlugin implements Listener {
         //     fileDeleted = file.delete();
         // }
 
-        NFTCache.deleteImageFromCache(nftName.toLowerCase());
+        NFTCache.deleteImageFromCache(nftName);
 
         Iterator<Entry<ImageMap, Integer>> it = NFTCache.getMaps().entrySet().iterator();
         while (it.hasNext()) {
