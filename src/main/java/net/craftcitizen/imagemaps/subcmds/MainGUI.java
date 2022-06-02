@@ -4,14 +4,11 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -21,10 +18,10 @@ import de.craftlancer.core.util.MessageUtil;
 import net.craftcitizen.imagemaps.ImageMaps;
 import net.craftcitizen.imagemaps.db.ImageThings;
 import net.craftcitizen.imagemaps.db.NFTCache;
-import net.craftcitizen.imagemaps.rendering.ImageMap;
 
-import java.io.File;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 // change to our GUI thing in the future
 public class MainGUI extends ImageMapSubCommand implements Listener {
@@ -135,19 +132,22 @@ public class MainGUI extends ImageMapSubCommand implements Listener {
 			event.setCancelled(true);
 			p.closeInventory();
 
+			// TODO: place command should take care of this
 			// check if DisplayName is in the cache so we dont have to download
-			java.awt.image.BufferedImage bImg = NFTCache.getImage(DisplayName);			
-
-			if(bImg == null) {
-				p.sendMessage("Image '" + DisplayName + "'' not in the cache, Downloading from chain...");
-				String ipfsLink = im.getIPFSLink(DisplayName);			
-				bImg = ImageThings.downloadNFT(ipfsLink);
-				NFTCache.addImage(DisplayName, bImg);
-				p.sendMessage("Downloaded!");
-			}
+			// java.awt.image.BufferedImage bImg = NFTCache.getImage(DisplayName);			
+			// if(bImg == null) {
+			// 	p.sendMessage("Image '" + DisplayName + "'' not in the cache, Downloading from chain...");
+			// 	String ipfsLink = im.getIPFSLink(DisplayName);			
+			// 	bImg = ImageThings.downloadNFT(ipfsLink);
+			// 	NFTCache.addImage(DisplayName, bImg);
+			// 	p.sendMessage("Downloaded & Added to cache!");
+			// }
 			
-			DisplayName = DisplayName.toLowerCase(); System.out.println("Lowercased " + DisplayName + " since we have to save it like that...");
-        	im.saveImageIOToMongoDB(bImg, DisplayName);
+			// NO Do not do this since place command needs the link. NO LONGER DOING THIS
+			// DisplayName = DisplayName; System.out.println("Lowercased " + DisplayName + " since we have to save it like that...");
+
+			// System.out.println("Uploading Image to MongoDB from the MainGUI.java");
+        	// ImageThings.uploadToMongoIfNotThere(DisplayName, bImg); // ! WIP TODO
 			
 			// Allow placement
 			// run command for player
