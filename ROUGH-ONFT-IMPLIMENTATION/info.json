@@ -1,0 +1,23 @@
+{
+    "IGNORE_SETTINGS": "1.18.2, BeyongBeliefLegacy_V1.2.2.zip, Old Lighting Off. Normal FOV.",
+    "IGNORE_LOCATION": "Location is 'craftcity;BuildingName;191,12,24' << GET THIS FROM API AT TIME OF MINT -- is id required? since properties could just be unique names.",
+    "IGNORE_NOTE2": "Seems cityId and region are both uuids as well. Will need an API to convert those to english",
+    "IGNORE_FILENAME": "We know the filename will be the id.png, so we just rename files when images are taken",
+    
+    "IGNORE_TYPES": "Types: mansion, home, shop, suite, ",
+
+    "IGNORE_API_NEEDS": {
+        "/api/:id/getInformation ": "returns Name,Description,Region (uuid & human name),Location,City (uuid & human name),RentState,restrictions(blocks),currentRentingPlayer (uuid&name), ownerID (UUID&Name)"
+    },
+
+    "0001": {
+        "type": "shop",
+        "size": "82",
+        "id": "ee53f5d3-63fc-4ea3-ab9b-6981ad14f6a2"
+    },
+    "0002": {
+        "type": "shop",
+        "size": "82",
+        "id": "f6ebbe2d-f5ca-4756-8d0c-b5973c0d0006"
+    }
+}
