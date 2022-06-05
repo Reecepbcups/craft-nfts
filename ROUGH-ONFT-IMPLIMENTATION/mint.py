@@ -4,13 +4,16 @@ from PIL import Image
 import time
 import os
 
-'''
-'''
+OUR_NFT_DENOM = "onftdenom23c8ecb9a9e2484ebfc7c4847e65f15b"
+prefixName = "TestRE #"
+ourPreviewImage = "https://pbs.twimg.com/profile_images/1530715122770931712/79qwdB0R_400x400.jpg"
+
+# We may need block_restrictions for the onft
+KEYS_WE_DONT_NEED_IN_THE_NFT = ["block_restrictions", "current_renter", "current_owner", "state"]
 
 thisFolder = parentDir(__file__)
 jsonFile = f"{thisFolder}/info.json"
 ipfsLinkFile = f"{thisFolder}/ipfs_links.json"
-
 
 def main():
 
@@ -32,9 +35,6 @@ def main():
 
 def mintNFT(nftNumber: int = 0000, JSONData: dict = {}):
     # WHAT IF WE BASE64 ENCODE THE JSON DATA? json.loads(base64.b64decode(myStr).decode('UTF-8'))
-    OUR_NFT_DENOM = "onftdenom23c8ecb9a9e2484ebfc7c4847e65f15b"
-    prefixName = "TestRE #"
-    ourPreviewImage = "https://pbs.twimg.com/profile_images/1530715122770931712/79qwdB0R_400x400.jpg"
     IPFS_IMAGE_LINK = links[nftNumber]
     # Example value this returns:  (( omniflixhubd q tx AEE050057EAD3EF2D1CE92ABCED615E17C256EA8D505EFF63FD162ED31164FA9  ))
     # omniflixhubd tx onft mint onftdenom23c8ecb9a9e2484ebfc7c4847e65f15b --name="TestRE #0001" --media-uri="https://ipfs.io/ipfs/QmXozTQYxsR5gz18gdhwtCNV37jiQgtuR9n9nMTpSRM1jq" --preview-uri="https://pbs.twimg.com/profile_images/1530715122770931712/79qwdB0R_400x400.jpg" --data="{'name': 'Property 1', 'type': 'House', 'description': 'This is a house', 'floorArea': 25, 'volume': 100, 'location': {'city': {'uuid': 'a71f5e33-5fa9-4de9-852a-dbed20b0be3a', 'name': 'craftcity'}, 'building': {'uuid': 'ee53f5d3-63fc-4ea3-ab9b-6981ad14f6a2', 'name': 'Building1'}, 'coordinates': {'x': 0, 'y': 0, 'z': 0}}, 'property_owner': {'uuid': '805a4070-2d4f-442e-9c7b-9194d1252325', 'username': 'Tesla_Stock'}}" --chain-id flixnet-4 --fees 200uflix --from reece
@@ -48,11 +48,10 @@ def mintNFT(nftNumber: int = 0000, JSONData: dict = {}):
     print(output)
 
 def removeWebappAPIThings(JSONObject: dict) -> dict:
-    # remove keys from the JSONObject that are not needed for the webapp
-    JSONObject.pop("block_restrictions", None)
-    JSONObject.pop("current_renter", None)
-    JSONObject.pop("current_owner", None)
-    JSONObject.pop("state", None)
+    # remove keys from the JSONObject that are not needed for the webapp.
+    # These keys are just for the marketplace
+    for s in KEYS_WE_DONT_NEED_IN_THE_NFT:
+        JSONObject.pop(s, None)    
     return JSONObject
 
 def getAPI(uuid: str) -> dict:
@@ -69,7 +68,7 @@ def getAPI(uuid: str) -> dict:
             "floorArea": 25,
             "volume": 100,        
             "block_restrictions": {
-                # Is this final for a property? maybe we just save the NAME of the restriction if so to IPFS
+                # Is this final for a property? maybe we just save the NAME of the restriction if so to IPFS.
                 "CHEST": 5,
                 "FURNACE": 5
             }, 

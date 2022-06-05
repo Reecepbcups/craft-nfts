@@ -6,23 +6,24 @@
 Needed:
 - When making a property, have a list of set broad types (Home, Business, Apartment, etc.)
 - When creating a property and it is all setup, return the uuid in an easy to click format to copy paste (in game plugin)
-
+(Maybe we could return the format which is in info.json ! just ensure there is a , at the end)
 
 Setup:
-- setup the real estate in game including: (PUT VALUES HERE WE NEED)
+- setup the real estate in game including all the keys, maybe we base64 encode this? but then again may not be a good idea.
 - Take screenshots of the real estate, edit the filename = the token name. Ex: 0001.png.
 - Set the string name with a key of the UUID of this property (Will will query the API for all our needs)
 
 
-1) Upload files to the link in upload.py
+1) Upload files to the link (ipfs) in upload.py
 - Get the return value from the right, and copy paste to the returnOutput variable exactly
 - Run the script, it will dump the filename->ipfs link as file ipfs_links.json.
-
-2) 
+(This way we can add the correct image -> the correct NFT)
 
 2) Next we need to mint the nft tokens from the onft collection.
 - Open the mint.py file.
-
+- Ensure we remove any keys from the API which is not used in the NFT data via removeWebappAPIThings
+- edit the values at the top to our desired
+- run it for all NFTs for that collection
 
 
 
