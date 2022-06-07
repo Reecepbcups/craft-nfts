@@ -38,37 +38,40 @@ export NODE="https://rpc.flixnet-4.omniflix.network:443"
 # sugar matrix make enough anxiety crazy birth forget adjust market few abuse spider town neither dice history bamboo prize fruit sell pupil online scare
 # omniflixhubd keys add reece --recover     ===>   omniflix13na285c3llhnfenq6hl3fh255scljcue4td9nh
 
-# creates denom craftre1 with a collection name of craft_re_1
-# https://json-schema.org/learn/miscellaneous-examples.html
-# https://www.liquid-technologies.com/online-json-to-schema-converter <<< Useful to copy paste our desired string -> a schema (make sure to run it through removeWebappAPIThings since some values are not required)>>>
-# https://codebeautify.org/jsonminifier << Then remove all the whitespace >>
-omniflixhubd tx onft create craftre2 --name craft_re_1 --description="The Craft Real Estate Test #1 Collection of XXXX properties" --preview-uri="https://pbs.twimg.com/profile_images/1530715122770931712/79qwdB0R_400x400.jpg" --schema='{"$schema":"http://json-schema.org/draft-04/schema#","type":"object","properties":{"name":{"type":"string"},"type":{"type":"string"},"description":{"type":"string"},"floorArea":{"type":"integer"},"volume":{"type":"integer"},"location":{"type":"object","properties":{"city":{"type":"object","properties":{"uuid":{"type":"string"},"name":{"type":"string"}},"required":["uuid","name"]},"building":{"type":"object","properties":{"uuid":{"type":"string"},"name":{"type":"string"}},"required":["uuid","name"]},"coordinates":{"type":"object","properties":{"x":{"type":"integer"},"y":{"type":"integer"},"z":{"type":"integer"}},"required":["x","y","z"]}},"required":["city","building","coordinates"]}},"required":["name","type","description","floorArea","volume","location"]}' --chain-id flixnet-4  --fees 200uflix --from reece
-# omniflixhubd q tx 3E45CB1E0024A3D4EF7B55F551271F177A419720E7454E20FAACE8D78D3E53AA   
-# ^^ Then get the onftdenom: onftdenom23c8ecb9a9e2484ebfc7c4847e65f15b
+# creates denom craftre1 with a collection name of craft_re_1 (Schema example in LATER/Schema.md)
+omniflixhubd tx onft create craftre5 --name craft_re_1 --description="The Craft Real Estate Test #5 Collection of XXXX properties" --preview-uri="https://pbs.twimg.com/profile_images/1530715122770931712/79qwdB0R_400x400.jpg" --chain-id flixnet-4  --fees 200uflix --from reece
+# omniflixhubd q tx 00E85E35A7834701CF9CA762BFC1B648E8F5BF4008D84AD6BFDE3580CCD2309F   
+# ^^ Then get the onftdenom: onftdenom612ffc6aac614402b3d45a6b6a5caff7
 
 # THis will be done via the mint.py script
-omniflixhubd tx onft mint onftdenom23c8ecb9a9e2484ebfc7c4847e65f15b \
+omniflixhubd tx onft mint onftdenom612ffc6aac614402b3d45a6b6a5caff7 \
     --name="{PROPERTY_NAME}" \    
     --media-uri="{IPFS_IMAGE_LINK}" \
     --preview-uri="https://pbs.twimg.com/profile_images/1530715122770931712/79qwdB0R_400x400.jpg" \
     --data="{RETURNED_API_JSON_VALUES}" \
     --chain-id flixnet-4 --fees 200uflix --from reece
-
 # omniflixhubd q tx AEE050057EAD3EF2D1CE92ABCED615E17C256EA8D505EFF63FD162ED31164FA9
 
-omniflixhubd query onft denom onftdenom23c8ecb9a9e2484ebfc7c4847e65f15b # curl -X GET "https://rest.flixnet-4.omniflix.network/omniflix/onft/v1beta1/collections/onftdenom23c8ecb9a9e2484ebfc7c4847e65f15b" -H  "accept: application/json"
+omniflixhubd query onft denom onftdenom612ffc6aac614402b3d45a6b6a5caff7 # curl -X GET "https://rest.flixnet-4.omniflix.network/omniflix/onft/v1beta1/collections/onftdenom612ffc6aac614402b3d45a6b6a5caff7" -H  "accept: application/json"
 
-omniflixhubd q onft supply onftdenom23c8ecb9a9e2484ebfc7c4847e65f15b # curl -X GET "https://rest.flixnet-4.omniflix.network/omniflix/onft/v1beta1/denoms/onftdenom23c8ecb9a9e2484ebfc7c4847e65f15b" -H  "accept: application/json"
+omniflixhubd q onft supply onftdenom612ffc6aac614402b3d45a6b6a5caff7 # curl -X GET "https://rest.flixnet-4.omniflix.network/omniflix/onft/v1beta1/denoms/onftdenom612ffc6aac614402b3d45a6b6a5caff7" -H  "accept: application/json"
 
-omniflixhubd q onft collection onftdenom23c8ecb9a9e2484ebfc7c4847e65f15b # curl -X GET "https://rest.flixnet-4.omniflix.network/omniflix/onft/v1beta1/denoms/onftdenom23c8ecb9a9e2484ebfc7c4847e65f15b/onfts/onft12eef7f93436412080409b4c3ca73153" -H  "accept: application/json"
-# The ID given after /onfts/:id is found with the collections endpoint '  curl -X GET "https://rest.flixnet-4.omniflix.network/omniflix/onft/v1beta1/collections/onftdenom23c8ecb9a9e2484ebfc7c4847e65f15b" -H  "accept: application/json"  '
+omniflixhubd q onft collection onftdenom612ffc6aac614402b3d45a6b6a5caff7 # curl -X GET "https://rest.flixnet-4.omniflix.network/omniflix/onft/v1beta1/denoms/onftdenom612ffc6aac614402b3d45a6b6a5caff7/onfts/onft12eef7f93436412080409b4c3ca73153" -H  "accept: application/json"
+# The ID given after /onfts/:id is found with the collections endpoint '  curl -X GET "https://rest.flixnet-4.omniflix.network/omniflix/onft/v1beta1/collections/onftdenom612ffc6aac614402b3d45a6b6a5caff7" -H  "accept: application/json"  '
 
 
 # Get supply an owner owns
-omniflixhubd q onft owner omniflix13na285c3llhnfenq6hl3fh255scljcue4td9nh --denom-id=onftdenom23c8ecb9a9e2484ebfc7c4847e65f15b # --denom-id is optional
-curl -X GET "https://rest.flixnet-4.omniflix.network/omniflix/onft/v1beta1/onfts/onftdenom23c8ecb9a9e2484ebfc7c4847e65f15b/omniflix13na285c3llhnfenq6hl3fh255scljcue4td9nh" -H  "accept: application/json"
+omniflixhubd q onft owner omniflix13na285c3llhnfenq6hl3fh255scljcue4td9nh --denom-id=onftdenom612ffc6aac614402b3d45a6b6a5caff7 # --denom-id is optional
+curl -X GET "https://rest.flixnet-4.omniflix.network/omniflix/onft/v1beta1/onfts/onftdenom612ffc6aac614402b3d45a6b6a5caff7/omniflix13na285c3llhnfenq6hl3fh255scljcue4td9nh" -H  "accept: application/json"
 
 # Get specific onft values from denom
-omniflixhubd q onft asset onftdenom23c8ecb9a9e2484ebfc7c4847e65f15b onft053ed17228c14d33b9f3bb7cd7b89622
-curl -X GET "https://rest.flixnet-4.omniflix.network/omniflix/onft/v1beta1/denoms/onftdenom23c8ecb9a9e2484ebfc7c4847e65f15b/onfts/onft053ed17228c14d33b9f3bb7cd7b89622" -H  "accept: application/json"
+omniflixhubd q onft asset onftdenom612ffc6aac614402b3d45a6b6a5caff7 onft053ed17228c14d33b9f3bb7cd7b89622
+curl -X GET "https://rest.flixnet-4.omniflix.network/omniflix/onft/v1beta1/denoms/onftdenom612ffc6aac614402b3d45a6b6a5caff7/onfts/onft053ed17228c14d33b9f3bb7cd7b89622" -H  "accept: application/json"
 ```
+
+
+
+
+
+## New steps
+1) Run the `python3 EXAMPLE/myFlaskAPI.py` in another terminal

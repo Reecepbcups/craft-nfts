@@ -12,11 +12,12 @@ import flask
 from flask import request, jsonify
 from typing import TypeVar, Type
 
+from HARDCODED_PROPERTIES import PROPERTY_MONGODB_EXAMPLE
+
 # curl --header "Content-Type: application/json" --request POST --data '{"username":"xyz","password":"xyz"}' http://localhost:5000/tx
 
 PRODUCTION, HOST, PORT = False, "0.0.0.0", 5000
-ONFT_COLLECTION = "onftdenom23c8ecb9a9e2484ebfc7c4847e65f15b"
-MY_WALLET = ""
+ONFT_COLLECTION = "onftdenom612ffc6aac614402b3d45a6b6a5caff7"
 
 app = flask.Flask(__name__)
 
@@ -33,76 +34,16 @@ def home():
     return jsonify(ROOT_ENDPOINTS)
 
 
-PROPERTY_MONGODB_EXAMPLE = {
-    "ee53f5d3-63fc-4ea3-ab9b-6981ad14f6a2": {
-        "name": "Property 1",
-        "uuid": "ee53f5d3-63fc-4ea3-ab9b-6981ad14f6a2",
-        "type": "House",
-        "description": "This is a house",
-        "floorArea": 25,
-        "volume": 100,
-        "block_restrictions": {
-            # Is this final for a property? maybe we just save the NAME of the restriction if so to IPFS.
-            "CHEST": 5,
-            "FURNACE": 5,
-        },
-        "location": {
-            "city": {
-                "uuid": "a71f5e33-5fa9-4de9-852a-dbed20b0be3a",
-                "name": "craftcity",
-            },
-            "building": {
-                "uuid": "ee53f5d3-63fc-4ea3-ab9b-6981ad14f6a2",
-                "name": "Building1",
-            },
-            "coordinates": {"x": 0, "y": 0, "z": 0},
-        },
-        "state": "OWNED",  # WEBAPP ONLY
-        "current_renter": {  # WEBAPP ONLY
-            "uuid": "79da3753-1b9e-4340-8a0f-9ea975c17fe4",
-            "username": "Reecepbcups",
-        },
-        "property_owner": {  # WEBAPP ONLY
-            "uuid": "805a4070-2d4f-442e-9c7b-9194d1252325",
-            "username": "Tesla_Stock",
-        },
-    },
-    "f6ebbe2d-f5ca-4756-8d0c-b5973c0d0006": {
-        "name": "Property 2",
-        "uuid": "f6ebbe2d-f5ca-4756-8d0c-b5973c0d0006",
-        "type": "Business",
-        "description": "This is a business",
-        "floorArea": 50,
-        "volume": 500,
-        "block_restrictions": {
-            # Is this final for a property? maybe we just save the NAME of the restriction if so to IPFS
-            # none for the business
-            "CHEST": 5,
-            "FURNACE": 5,
-        },
-        "location": {
-            "city": {
-                "uuid": "a71f5e33-5fa9-4de9-852a-dbed20b0be3a",
-                "name": "craftcity",
-            },
-            "building": {
-                "uuid": "892f8bb6-df50-49dd-b06a-93b9de72e27e",
-                "name": "Building2",
-            },
-            "coordinates": {"x": 100, "y": 100, "z": 100},
-        },
-        "state": "RENTED",  # WEBAPP ONLY
-        "current_renter": {  # WEBAPP ONLY
-            "uuid": "79da3753-1b9e-4340-8a0f-9ea975c17fe4",
-            "username": "Reecepbcups",
-        },
-        "property_owner": {  # WEBAPP ONLY
-            "uuid": "805a4070-2d4f-442e-9c7b-9194d1252325",
-            "username": "Tesla_Stock",
-        },
-    },
-}
 
+# Gets a random property from our DB (used for making a schema)
+@app.route("/getFirst", methods=["GET"])
+def getRandomProperty():
+    '''
+    http://127.0.0.1:5000/getFirst
+    '''
+
+    random_key = list(PROPERTY_MONGODB_EXAMPLE.keys())[0]
+    return jsonify(PROPERTY_MONGODB_EXAMPLE.get(random_key))
 
 @app.route("/info", methods=["GET"])
 def getProperty():
@@ -121,27 +62,53 @@ def getProperty():
 
 import requests, json, ast
 
-@app.route("/onft", methods=["GET"])
+@app.route("/owned", methods=["GET"])
 def getOwnedNFTs():
     '''
-    http://127.0.0.1:5000/onft?address=omniflix13na285c3llhnfenq6hl3fh255scljcue4td9nh
+    This is a middleware API to make it easier to sift through the data on the server
+    http://127.0.0.1:5000/owned?address=omniflix13na285c3llhnfenq6hl3fh255scljcue4td9nh
+
+    {
+        "ee53f5d3-63fc-4ea3-ab9b-6981ad14f6a2": "CRE #0001",
+        "f6ebbe2d-f5ca-4756-8d0c-b5973c0d0006": "CRE #0002"
+    }
     '''
     wallet = _getRequestValue(str, "address", request.args)
     api = f"https://rest.flixnet-4.omniflix.network/omniflix/onft/v1beta1/onfts/{ONFT_COLLECTION}/{wallet}"
+    # https://rest.flixnet-4.omniflix.network/omniflix/onft/v1beta1/onfts/onftdenom612ffc6aac614402b3d45a6b6a5caff7/omniflix13na285c3llhnfenq6hl3fh255scljcue4td9nh
     
     myNFTs = requests.get(api).json()
-    if len(myNFTs) == 0:
-        return jsonify("error", "No NFTs found", 404)
+    # if len(myNFTs) == 0:
+    #     return jsonify("error", "No NFTs found", 404)
+
+    
+    if 'message' in myNFTs:
+        # Means the request did not work right, so we return nothing (no update)
+        # Added since I test with an invalid wallet
+        return {}
+
 
     myProperties = {}
     myNFTs = myNFTs['collections'][0]['onfts']
+
+    if len(myNFTs) == 0:
+        return {}
+
     for nft in myNFTs:
         name = nft['metadata']['name']
-        data = json.dumps(ast.literal_eval(nft['data']))
-        print(data)
-        # myProperties[name] = data
+        data = ast.literal_eval(nft['data'])
+        # print(data.keys())
 
+        uuid = data['uuid']
+        desc = data['description']
+        _type = data['type']
+        myProperties[uuid] = {
+            "name": name,
+            "description": desc,
+            "type": _type,
+        }
 
+    print(myProperties)
     return jsonify(myProperties)
 
     
