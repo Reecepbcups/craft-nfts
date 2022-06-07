@@ -4,6 +4,8 @@ from PIL import Image
 import time
 import os
 
+# TODO: We need to save property UUID to oNFT as well.
+
 OUR_NFT_DENOM = "onftdenom23c8ecb9a9e2484ebfc7c4847e65f15b"
 prefixName = "TestRE #"
 ourPreviewImage = "https://pbs.twimg.com/profile_images/1530715122770931712/79qwdB0R_400x400.jpg"
@@ -63,6 +65,7 @@ def getAPI(uuid: str) -> dict:
     EXAMPLE_API = {
         "ee53f5d3-63fc-4ea3-ab9b-6981ad14f6a2": {
             "name": "Property 1",
+            "uuid": "ee53f5d3-63fc-4ea3-ab9b-6981ad14f6a2",
             "type": "House",
             "description": "This is a house",
             "floorArea": 25,
@@ -99,6 +102,7 @@ def getAPI(uuid: str) -> dict:
         },
         "f6ebbe2d-f5ca-4756-8d0c-b5973c0d0006": {
             "name": "Property 2",
+            "uuid": "f6ebbe2d-f5ca-4756-8d0c-b5973c0d0006",
             "type": "Business",
             "description": "This is a business",
             "floorArea": 50,
