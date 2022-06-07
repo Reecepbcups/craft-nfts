@@ -1,6 +1,8 @@
 {
     "IGNORE_SETTINGS": "1.18.2, BeyondBeliefLegacy_V1.2.2.zip, Old Lighting Off. Normal FOV.",
 
+    "IGNORE_NOTE": "Do we even need this section? We could just grab the UUID from the MONGODB, then have the picture = the UUID.png - idk",
+
     "0001": "ee53f5d3-63fc-4ea3-ab9b-6981ad14f6a2",    
     "0002": "f6ebbe2d-f5ca-4756-8d0c-b5973c0d0006"
     

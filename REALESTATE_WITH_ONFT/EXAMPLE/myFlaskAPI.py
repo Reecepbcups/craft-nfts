@@ -40,8 +40,9 @@ def home():
 def getRandomProperty():
     '''
     http://127.0.0.1:5000/getFirst
+    This will ONLY be used to make a schema from our database.
+    Not actually production use
     '''
-
     random_key = list(PROPERTY_MONGODB_EXAMPLE.keys())[0]
     return jsonify(PROPERTY_MONGODB_EXAMPLE.get(random_key))
 
@@ -65,12 +66,20 @@ import requests, json, ast
 @app.route("/owned", methods=["GET"])
 def getOwnedNFTs():
     '''
-    This is a middleware API to make it easier to sift through the data on the server
+    This is a middleware API to make it easier to sift through the data on the server. GETs which properties a user OWNS on chain & returns basic data
     http://127.0.0.1:5000/owned?address=omniflix13na285c3llhnfenq6hl3fh255scljcue4td9nh
 
     {
-        "ee53f5d3-63fc-4ea3-ab9b-6981ad14f6a2": "CRE #0001",
-        "f6ebbe2d-f5ca-4756-8d0c-b5973c0d0006": "CRE #0002"
+        "ee53f5d3-63fc-4ea3-ab9b-6981ad14f6a2": {
+            "description": "This is a house",
+            "name": "CRE2 #0001",
+            "type": "House"
+        },
+        "f6ebbe2d-f5ca-4756-8d0c-b5973c0d0006": {
+            "description": "This is a business",
+            "name": "CRE2 #0002",
+            "type": "Business"
+        }
     }
     '''
     wallet = _getRequestValue(str, "address", request.args)
@@ -89,11 +98,11 @@ def getOwnedNFTs():
 
 
     myProperties = {}
-    myNFTs = myNFTs['collections'][0]['onfts']
-
-    if len(myNFTs) == 0:
+    collections = myNFTs['collections']
+    if len(collections) == 0:
         return {}
 
+    myNFTs = collections[0]['onfts']
     for nft in myNFTs:
         name = nft['metadata']['name']
         data = ast.literal_eval(nft['data'])
