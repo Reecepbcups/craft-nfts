@@ -15,7 +15,7 @@ Steps to mint
 
 '''
 
-OUR_NFT_DENOM = "onftdenom612ffc6aac614402b3d45a6b6a5caff7"
+OUR_NFT_DENOM = "onftdenome307136eed384681ab981e6aedbcad5c"
 prefixName = "CRE2 #"
 TX_SUFFIX = "--chain-id flixnet-4 --fees 200uflix --from reece --yes"
 # ourPreviewImage = "https://pbs.twimg.com/profile_images/1530715122770931712/79qwdB0R_400x400.jpg" # I assume we use the property as the preview image??
@@ -28,7 +28,7 @@ KEYS_WE_DONT_NEED_IN_THE_NFT = ["block_restrictions", "current_renter", "current
 
 thisFolder = parentDir(__file__)
 jsonFile = f"{thisFolder}/info.json"
-ipfsLinkFile = f"{thisFolder}/ipfs_links.json"
+ipfsLinkFile = f"{thisFolder}/AUTO_GENERATED_ipfs_links.json"
 
 def main():
     for nftID, reUUID in data.items():

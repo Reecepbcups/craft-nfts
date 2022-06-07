@@ -17,7 +17,7 @@ from HARDCODED_PROPERTIES import PROPERTY_MONGODB_EXAMPLE
 # curl --header "Content-Type: application/json" --request POST --data '{"username":"xyz","password":"xyz"}' http://localhost:5000/tx
 
 PRODUCTION, HOST, PORT = False, "0.0.0.0", 5000
-ONFT_COLLECTION = "onftdenom612ffc6aac614402b3d45a6b6a5caff7"
+ONFT_COLLECTION = "onftdenome307136eed384681ab981e6aedbcad5c"
 
 app = flask.Flask(__name__)
 
@@ -75,7 +75,7 @@ def getOwnedNFTs():
     '''
     wallet = _getRequestValue(str, "address", request.args)
     api = f"https://rest.flixnet-4.omniflix.network/omniflix/onft/v1beta1/onfts/{ONFT_COLLECTION}/{wallet}"
-    # https://rest.flixnet-4.omniflix.network/omniflix/onft/v1beta1/onfts/onftdenom612ffc6aac614402b3d45a6b6a5caff7/omniflix13na285c3llhnfenq6hl3fh255scljcue4td9nh
+    # https://rest.flixnet-4.omniflix.network/omniflix/onft/v1beta1/onfts/onftdenome307136eed384681ab981e6aedbcad5c/omniflix13na285c3llhnfenq6hl3fh255scljcue4td9nh
     
     myNFTs = requests.get(api).json()
     # if len(myNFTs) == 0:

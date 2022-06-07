@@ -1,6 +1,8 @@
 import json
 from os.path import dirname as parentDir
 
+filePath = parentDir(__file__) + '/AUTO_GENERATED_ipfs_links.json'
+
 # Upload IPFS Images, then grab with https://ipfs.io/ipfs/HASH  (In the future use our own IPFS server)
 # https://anarkrypto.github.io/upload-files-to-ipfs-from-browser-panel/public/
 # this returns:
@@ -29,8 +31,7 @@ for obj in returnOutput:
 
 
 # Put this into the ipfs_links.json file
-filePath = parentDir(__file__) + '/ipfs_links.json'
 with open(filePath, 'w') as outfile:
   json.dump(myDict, outfile)
   
-print(f"Written all files name -> ipfs links to ipfs_links.json")
+print(f"Written all files name -> ipfs links to {filePath}")
