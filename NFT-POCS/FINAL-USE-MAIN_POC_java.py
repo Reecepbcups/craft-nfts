@@ -52,13 +52,18 @@ def main():
     # Map of every NFT we hold in the format {"name": "ipfslink", }
     ALL_MY_NFTS = {} 
     
-    for prefix in ["omniflix", "stars"]:  
+    for prefix in NFT_QUERYS.keys():  
         # converts their CRAFT address -> stars & omniflix so we can query  
         myNewAddr = convertBech32WalletToNew(WALLET, prefix)
         print(f"Getting NFTs for: {myNewAddr} (from original: {WALLET})")
 
         # Calls the correct function to query their wallet, returns Map of many NFts
-        myNFTs = NFT_QUERYS[prefix](myNewAddr)
+        myNFTs = NFT_QUERYS[prefix]
+
+        if myNFTs == None:
+            continue
+
+        myNFTs = myNFTs(myNewAddr)
         print(f"Len: {len(myNFTs)}")
 
         # If more than 0 NFts are there, we append all NFTs to ALL_MY_NFTS Map.
