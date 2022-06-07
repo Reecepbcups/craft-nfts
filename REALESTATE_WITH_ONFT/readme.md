@@ -3,13 +3,8 @@
 ### MAKE SURE WE COMPRESS IMAGES -> JPG & COMPRESS QUALITY BEFORE SENDING TO IPFS. + ALSO REMOVE META/EXISF DATA.
 ### Need to use py script
 
-Needed:
-- When making a property, have a list of set broad types (Home, Business, Apartment, etc.)
-- When creating a property and it is all setup, return the uuid in an easy to click format to copy paste (in game plugin)
-(Maybe we could return the format which is in info.json ! just ensure there is a , at the end)
-
 Setup:
-- setup the real estate in game including all the keys, maybe we base64 encode this? but then again may not be a good idea.
+- setup the real estate in game including all the keys.
 - Take screenshots of the real estate, edit the filename = the token name. Ex: 0001.png.
 - Set the string name with a key of the UUID of this property (Will will query the API for all our needs)
 

@@ -31,7 +31,7 @@ def main():
         # print(nftID, reUUID, ipfsImageLink)
 
         jsonObj = getAPI(reUUID)
-        jsonObj = removeWebappAPIThings(jsonObj)
+        jsonObj = removeWebappUneededKeys(jsonObj)
         # print(jsonObj)
         mintNFT(nftID, jsonObj)
 
@@ -49,7 +49,7 @@ def mintNFT(nftNumber: int = 0000, JSONData: dict = {}):
     output = f"""omniflixhubd tx onft mint {OUR_NFT_DENOM} --name="{prefixName}{nftNumber}" --description="Craft Economy Real Estate Testing" --media-uri="{IPFS_IMAGE_LINK}" --preview-uri="{ourPreviewImage}" --data="{JSONData}" --chain-id flixnet-4 --fees 200uflix --from reece --yes"""
     print(output)
 
-def removeWebappAPIThings(JSONObject: dict) -> dict:
+def removeWebappUneededKeys(JSONObject: dict) -> dict:
     # remove keys from the JSONObject that are not needed for the webapp.
     # These keys are just for the marketplace
     for s in KEYS_WE_DONT_NEED_IN_THE_NFT:
